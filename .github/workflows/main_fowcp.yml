@@ -16,44 +16,38 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '~22'
+    - name: Set up Node.js version
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
 
-      - name: Install and build frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
-          cd ..
-          mkdir -p backend/public
-          cp -r frontend/build/* backend/public/
+    - name: Install and build frontend
+      run: |
+        cd frontend
+        npm install
+        npm run build
+        cd ..
 
-      - name: Install backend dependencies and build
-        run: |
-          cd backend
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+    - name: Copy frontend build to backend
+      run: |
+        mkdir -p backend/public
+        cp -r frontend/build/* backend/public/
 
-      - name: Stop Azure Web App
-        uses: azure/webapp-stop@v1
-        with:
-          app-name: 'fowcp'
+    - name: Install backend dependencies and build
+      run: |
+        cd backend
+        npm install
+        npm run build --if-present
+        npm run test --if-present
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-app
-          path: backend
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: node-app
+        path: backend
 
-      - name: Start Azure Web App
-        uses: azure/webapp-start@v1
-        with:
-          app-name: 'fowcp'
 
   deploy:
     runs-on: ubuntu-latest
