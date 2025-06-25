@@ -1,6 +1,11 @@
 cd C:\Users\DanOrsborne\Downloads\events-manager-app\frontend
 
+npm install
+
 npm run build
+
+cp -r frontend/build backend/frontend_build
+
 
 Compress-Archive -Path * -DestinationPath app.zip
 
