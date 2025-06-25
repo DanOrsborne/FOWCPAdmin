@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { client,  databaseName,  registrationsDB,  usersDB,    eventsDB } = require('./cosmos');
 const axios = require('axios');
 const express = require('express');
@@ -6,8 +8,8 @@ const cors = require('cors');
 const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 5000;
-const SUMUP_API_KEY = 'sup_sk_uFktFBw7CC4SJX3iszNEEufMzKZ7AOsW6';
-const BITLY_API_KEY = '87317f644c9ccae0cac373720ade9a8f9c0b4e5b';
+const SUMUP_API_KEY =  process.env.SUMUP_API_KEY
+const BITLY_API_KEY = process.env.BITLY_API_KEY;
 const { v4: uuidv4 } = require('uuid');
 const longUrl = `https://fowcpevents20240928105048.azurewebsites.net/api/FOWCPEventSignup?code=2R7-QJayuS3kFRIhlH2N-FhF0xSCQIKgLrotyAAEBHgsAzFuw1G4hQ==&eventid=`;
 

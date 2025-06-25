@@ -1,7 +1,7 @@
 const { CosmosClient } = require('@azure/cosmos');
 
-const endpoint = 'https://registrations.documents.azure.com:443/';
-const key = 'ec22KsmfNCEDaQNoQnezKcfhiexG0P4fcNlaS1UN3VGklvUC9HgDqcX7Pd5psnZMCplywf3DQUqzACDbqZ8New==';
+const endpoint = process.env.COSMOS_DB_ENDPOINT;
+const key =  process.env.COSMOS_DB_KEY;
 const databaseName = 'Registrations';
 const registrationsDB = 'Items';
 const eventsDB = 'Events';

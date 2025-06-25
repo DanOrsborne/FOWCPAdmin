@@ -6,4 +6,4 @@ Compress-Archive -Path * -DestinationPath app.zip
 
 az login
 
-az webapp deployment source config-zip --resource-group AMS-Live --name fowcp --src app.zip
+az webapp deploy source config-zip --resource-group AMS-Live --name fowcp --src app.zip
