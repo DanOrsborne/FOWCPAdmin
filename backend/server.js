@@ -451,8 +451,8 @@ app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
 const path = require('path');
 
 // Serve static frontend
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'frontend_build')));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'frontend_build', 'index.html'));
 });
