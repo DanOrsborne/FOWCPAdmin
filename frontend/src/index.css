@@ -1,0 +1,42 @@
+.mb-10{
+    margin-bottom: 10px;
+}
+
+.mb-15{
+    margin-bottom: 15px;
+}
+
+.mb-20{
+    margin-bottom: 20px;
+}
+
+
+
+.MuiDrawer-root ul li div.Mui-selected, .MuiDrawer-root ul li div.Mui-selected:hover
+{
+    background-color:#1976d2 !important;
+    color: #fff;
+}
+
+.MuiDrawer-root ul li .MuiListItemButton-root:hover
+{
+color:#000;
+background-color:#cccccc;
+
+}
+
+.MuiList-root
+{
+    padding-top: 0 !important;
+}
+
+main.MuiBox-root{
+    padding:0 !important;
+     padding-top: 10px !important;
+      padding-left: 10px !important;
+      margin-top: 64px;
+}
+
+div.MuiPaper-root{
+    overflow: hidden;
+}
