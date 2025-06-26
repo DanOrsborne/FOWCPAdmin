@@ -4,7 +4,7 @@ import { Box, Typography, Card, CardContent, Button, CircularProgress, Table, Ta
 import Header from './Header';
 import Menu from './Menu';
 
-const { apiUrl } = require('./Constants');
+
 
 const EventSummaryPage = () => {
   const { eventId } = useParams();
@@ -12,6 +12,7 @@ const EventSummaryPage = () => {
   const [event, setEvent] = useState(null);
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { apiUrl } = require('./Constants');
 
   useEffect(() => {
 

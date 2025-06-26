@@ -3,8 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Box, TextField, Checkbox, FormControlLabel, Button, MenuItem, Typography, Grid } from '@mui/material';
 import dayjs from 'dayjs';
 
-const { apiUrl } = require('./Constants');
-
 import Header from './Header';
 import Menu from './Menu';
 import TextInputField from './Controls/TextInputField';
@@ -15,7 +13,7 @@ export default function EditEventPage({ isNew }) {
   const { eventId } = useParams();
   const navigate = useNavigate();
   const [eventData, setEventData] = useState(null);
-  
+  const { apiUrl } = require('./Constants');
 
   useEffect(() => {
     if (!isNew && eventId) {

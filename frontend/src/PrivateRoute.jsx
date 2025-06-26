@@ -3,9 +3,10 @@ import { Navigate } from 'react-router-dom';
 
 export default function PrivateRoute({ children }) {
   const [auth, setAuth] = useState(null);
+  const { apiUrl } = require('./Constants');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/checkAuth', { credentials: 'include' })
+    fetch(`${apiUrl}/checkAuth`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => setAuth(data.authenticated));
   }, []);

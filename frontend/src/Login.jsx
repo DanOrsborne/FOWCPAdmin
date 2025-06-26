@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container } from '@mui/material';
 
+
+
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { apiUrl } = require('./Constants');
 
   const handleLogin = async () => {
-    const res = await fetch('http://localhost:5000/api/login', {
+    const res = await fetch(`${apiUrl}/login`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

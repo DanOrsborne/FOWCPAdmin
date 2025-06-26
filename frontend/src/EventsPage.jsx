@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Typography, Container, Table, TableBody, TableCell, TableHead, TableRow, Button, Select, MenuItem, Box, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-const { apiUrl } = require('./Constants');
-
 import Header from './Header';
 import Menu from './Menu';
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
   const [filter, setFilter] = useState('active');
-
   const navigate = useNavigate();
-
+  const { apiUrl } = require('./Constants');
   const username = sessionStorage.getItem('username');
 
   useEffect(() => {

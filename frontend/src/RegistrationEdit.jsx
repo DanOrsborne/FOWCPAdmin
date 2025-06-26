@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Grid, TextField, Button, MenuItem } from '@mui/material';
-
-const { apiUrl } = require('./Constants');
-
 import Header from './Header';
 import Menu from './Menu';
 import TextInputField from './Controls/TextInputField';
@@ -14,6 +11,7 @@ export default function EditRegistration() {
   const { eventId, registrationId } = useParams();
   const navigate = useNavigate();
   const [registrationData, setRegistrationData] = useState(null);
+  const { apiUrl } = require('./Constants');
 
   useEffect(() => {
     fetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, { credentials: 'include' })

@@ -4,7 +4,6 @@ import { Box, Typography, Button, CircularProgress, Table, TableHead, TableRow, 
 import Header from './Header';
 import Menu from './Menu';
 
-const { apiUrl } = require('./Constants');
 
 const EventFailedPaymentPage = () => {
   const { eventId } = useParams();
@@ -12,6 +11,7 @@ const EventFailedPaymentPage = () => {
   const [event, setEvent] = useState(null);
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { apiUrl } = require('./Constants');
 
   useEffect(() => {
 

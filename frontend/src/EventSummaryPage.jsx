@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {Box, Typography, Card, CardContent, Button, CircularProgress } from '@mui/material';
-
-const { apiUrl } = require('./Constants');
-
 import Header from './Header';
 import Menu from './Menu';
 
@@ -14,6 +11,7 @@ const EventSummaryPage = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [event, setEvent] = useState(null);
+  const { apiUrl } = require('./Constants');
 
   useEffect(() => {
     const fetchEvent = async () => {

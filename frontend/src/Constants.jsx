@@ -1,6 +1,6 @@
 
 const drawerWidth = 180;
-const apiUrl = "http://localhost:5000/api";
+const apiUrl = "/api";
 
 
 

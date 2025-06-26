@@ -7,6 +7,7 @@ const session = require('express-session');
 const cors = require('cors');
 const crypto = require('crypto');
 const app = express();
+const path = require('path');
 const PORT = process.env.PORT || 5000;
 const SUMUP_API_KEY =  process.env.SUMUP_API_KEY
 const BITLY_API_KEY = process.env.BITLY_API_KEY;
@@ -22,7 +23,7 @@ const registrationsContainer = client.database(databaseName).container(registrat
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(session({
-  secret: 'replace_this_secret',
+  secret: process.env.SESSION_SECRET || 'replace_this_secret',
   resave: false,
   saveUninitialized: true,
 }));
@@ -43,8 +44,9 @@ app.post('/api/login', async (req, res) => {
       const user = resources[0];
       const dbPassword = user.Password;
       const hashedInput = crypto.createHash('md5').update(password + 'M0nke61').digest('hex');
+      //console.log(`hashedInput: ${hashedInput}`);
 
-      if (hashedInput === dbPassword) {
+      if (hashedInput === dbPassword && user.Enabled) {
         req.session.user = { username };
         return res.json({ success: true });
       }
@@ -447,13 +449,13 @@ app.get('/api/registrations/:registrationId/sumup', async (req, res) => {
 
 
 
-const path = require('path');
+
 
 // Serve static frontend
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, '/build')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/build/index.html'));
 });
 
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
