@@ -26,15 +26,15 @@ jobs:
       with:
         node-version: '22'
 
-    #- name: Install frontend
-    #  working-directory: frontend
-    #  run: |
-    #    npm i
+    - name: Install frontend
+      working-directory: frontend
+      run: |
+        npm i
 
-    #- name: Build  frontend
-    #  working-directory: frontend
-    #  run: |
-    #    npm run build
+    - name: Build  frontend
+      working-directory: frontend
+      run: |
+        npm run build
 
     # Copy frontend build into backend folder
     #- name: Copy frontend build to backend
