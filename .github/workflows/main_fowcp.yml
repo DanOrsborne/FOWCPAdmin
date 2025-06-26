@@ -64,5 +64,5 @@ jobs:
         app_location: "frontend" # App source code path
         api_location: "backend" # Api source code path - optional
         api_build_command: "npm i --omit=dev"
-        output_location: "frontend/build" # Built app content directory - optional  
+        output_location: "build" # Built app content directory - optional  
 
