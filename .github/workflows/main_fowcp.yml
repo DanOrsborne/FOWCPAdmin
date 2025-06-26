@@ -37,14 +37,14 @@ jobs:
         npm run build
 
     # Copy frontend build into backend folder
-    - name: Copy frontend build to backend
-      run: cp -r frontend/build backend/build
+    #- name: Copy frontend build to backend
+    #  run: cp -r frontend/build backend/build
 
 
     # Build Backend
-    - name: Install backend dependencies
-      working-directory: backend
-      run: npm i --omit=dev
+   # - name: Install backend dependencies
+    #  working-directory: backend
+   #   run: npm i --omit=dev
       
     # Zip backend for deployment
     #- name: Archive backend for deployment
@@ -61,10 +61,8 @@ jobs:
         action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-        skip_app_build: true
-        app_location: "backend/build" # App source code path
-        
-        skip_api_build: true
+        app_location: "frontend" # App source code path
         api_location: "backend" # Api source code path - optional
-        #output_location: "frontend/build" # Built app content directory - optional  
+        api_build_command: "npm i --omit=dev"
+        output_location: "frontend/build" # Built app content directory - optional  
 
