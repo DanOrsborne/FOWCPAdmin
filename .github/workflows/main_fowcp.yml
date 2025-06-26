@@ -29,7 +29,7 @@ jobs:
     - name: Install frontend
       working-directory: frontend
       run: |
-        npm install
+        npm ci
 
     - name: Build  frontend
       working-directory: frontend
@@ -38,13 +38,13 @@ jobs:
 
     # Copy frontend build into backend folder
     - name: Copy frontend build to backend
-      run: cp -r frontend/build backend/frontend_build
+      run: cp -r frontend/build backend/public
 
 
     # Build Backend
     - name: Install backend dependencies
       working-directory: backend
-      run: npm install --omit=dev
+      run: npm ci --omit=dev
       
     # Zip backend for deployment
     - name: Archive backend for deployment
