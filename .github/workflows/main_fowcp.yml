@@ -48,9 +48,8 @@ jobs:
       
     # Zip backend for deployment
     - name: Archive backend for deployment
-      run: |
-        cd backend
-        zip -r ../app.zip .
+      working-directory: backend
+      run: zip -r ../app.zip .
      
 
 
