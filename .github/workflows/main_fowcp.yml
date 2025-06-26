@@ -29,7 +29,7 @@ jobs:
     - name: Install frontend
       working-directory: frontend
       run: |
-        npm ci
+        npm i
 
     - name: Build  frontend
       working-directory: frontend
@@ -44,12 +44,12 @@ jobs:
     # Build Backend
     - name: Install backend dependencies
       working-directory: backend
-      run: npm ci --omit=dev
+      run: npm i --omit=dev
       
     # Zip backend for deployment
     - name: Archive backend for deployment
       working-directory: backend
-      run: zip -r ../app.zip . -x "node_modules/*"
+      run: zip -r ../app.zip . 
      
 
 
