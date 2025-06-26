@@ -49,7 +49,7 @@ jobs:
     # Zip backend for deployment
     - name: Archive backend for deployment
       working-directory: backend
-      run: zip -r ../app.zip .
+      run: zip -r ../app.zip . -x "node_modules/*"
      
 
 
