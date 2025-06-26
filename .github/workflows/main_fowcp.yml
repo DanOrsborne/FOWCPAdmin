@@ -38,7 +38,7 @@ jobs:
 
     # Copy frontend build into backend folder
     - name: Copy frontend build to backend
-      run: cp -r frontend/build backend/public
+      run: cp -r frontend/build backend/build
 
 
     # Build Backend
