@@ -23,6 +23,32 @@ jobs:
         with:
           node-version: '20.x'
 
+      - name: Install frontend
+        working-directory: frontend
+        run: |
+          npm i
+
+      - name: Build  frontend
+        working-directory: frontend
+        run: |
+          npm run build
+
+      # Copy frontend build into backend folder
+      - name: Copy frontend build to backend
+        run: cp -r frontend/build backend/build
+
+
+      # Build Backend
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm i --omit=dev
+        
+      # Zip backend for deployment
+      #- name: Archive backend for deployment
+      #  working-directory: backend
+      #  run: zip -r ../app.zip . 
+
+          
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
