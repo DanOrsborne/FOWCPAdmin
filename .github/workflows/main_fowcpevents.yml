@@ -71,6 +71,10 @@ jobs:
         with:
           name: node-app
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
