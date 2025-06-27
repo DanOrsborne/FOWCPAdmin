@@ -133,7 +133,7 @@ export default function EditEventPage({ isNew }) {
         onChange={val => handleChange('TermsAndConditions', val)}
         />
 
-        {!isNew && <TextField
+        {1=0 && !isNew && <TextField
         label="ShortUrl"
         value={eventData != null && eventData.ShortUrl}
         disabled={true}
