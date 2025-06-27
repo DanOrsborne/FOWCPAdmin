@@ -133,12 +133,7 @@ export default function EditEventPage({ isNew }) {
         onChange={val => handleChange('TermsAndConditions', val)}
         />
 
-        {1=0 && !isNew && <TextField
-        label="ShortUrl"
-        value={eventData != null && eventData.ShortUrl}
-        disabled={true}
-        />} {!isNew && !eventData.ShortUrl && <Button variant='contained' onClick={handleCreateShortUrl}> Create Short URL </Button>}
-
+        
 
      <CheckBoxInputField
         label="Event Active?"
