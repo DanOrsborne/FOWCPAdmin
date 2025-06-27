@@ -43,7 +43,7 @@ app.post('/api/login', async (req, res) => {
     if (resources.length > 0) {
       const user = resources[0];
       const dbPassword = user.Password;
-      const hashedInput = crypto.createHash('md5').update(password + 'M0nke61').digest('hex');
+      const hashedInput = crypto.createHash('md5').update(password + process.env.PASSWORD_HASH_SALT).digest('hex'); //https://www.md5.cz/
       //console.log(`hashedInput: ${hashedInput}`);
 
       if (hashedInput === dbPassword && user.Enabled) {
