@@ -64,7 +64,7 @@ const EventSummaryPage = () => {
           <Typography>Gift Aid Registrations: {summary?.GiftAidRegistrations}</Typography>
           <Typography>Total Paid: £{summary?.TotalPaid?.toFixed(2)}</Typography>
           <Typography>Gift Aid Total: £{summary?.GiftAidTotal?.toFixed(2)}</Typography>
-          <Typography>Total Number of Tickets: {summary?.TotalNumberOfTickets}</Typography>
+          {summary?.TotalNumberOfTickets > 0 && <Typography>Total Number of Tickets: {summary?.TotalNumberOfTickets}</Typography>}
         </CardContent>
       </Card>
 
