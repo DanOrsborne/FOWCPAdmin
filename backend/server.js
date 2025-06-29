@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+
 const { client,  databaseName,  registrationsDB,  usersDB,    eventsDB } = require('./cosmos');
 const axios = require('axios');
 const express = require('express');
@@ -8,12 +9,13 @@ const cors = require('cors');
 const crypto = require('crypto');
 const app = express();
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const qr = require("qr-image");
+
+const longUrl = `https://fowcpevents20240928105048.azurewebsites.net/api/FOWCPEventSignup?code=2R7-QJayuS3kFRIhlH2N-FhF0xSCQIKgLrotyAAEBHgsAzFuw1G4hQ==&eventid=`;
 const PORT = process.env.PORT;
 const SUMUP_API_KEY =  process.env.SUMUP_API_KEY
 const BITLY_API_KEY = process.env.BITLY_API_KEY;
-const { v4: uuidv4 } = require('uuid');
-const longUrl = `https://fowcpevents20240928105048.azurewebsites.net/api/FOWCPEventSignup?code=2R7-QJayuS3kFRIhlH2N-FhF0xSCQIKgLrotyAAEBHgsAzFuw1G4hQ==&eventid=`;
-
 
 
 const eventsContainer = client.database(databaseName).container(eventsDB);
@@ -198,6 +200,38 @@ async function createShortUrl(eventId)
   }
 }
 
+
+
+app.get('/api/events/:eventId/qr', async (req, res) => {
+  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+
+  const eventId = req.params.eventId;
+
+
+  try {
+    const querySpec = {
+      query: 'SELECT * FROM c WHERE c.EventId = @eventId',
+      parameters: [{ name: '@eventId', value: eventId }]
+    };
+
+    const { resources } = await eventsContainer.items.query(querySpec).fetchAll();
+    if (resources.length === 0) return res.status(404).json({ message: 'Event not found' });
+
+    const event = resources[0];
+
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+
+
+  const qrText = event.ShortUrl;
+  const qrPng = qr.image(qrText, { type: 'png' });
+  res.type('png');
+  qrPng.pipe(res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to update event URL' });
+  }
+});
 
 app.post('/api/events', async (req, res) => {
   if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });

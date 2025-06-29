@@ -1,10 +1,7 @@
 
+
 const drawerWidth = 180;
-const apiUrl = "/api";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 
-
-module.exports = {
-  drawerWidth,
- apiUrl
-};
+export { drawerWidth, apiUrl };

@@ -15,15 +15,23 @@ export default function EditEventPage({ isNew }) {
   const [eventData, setEventData] = useState(null);
   const { apiUrl } = require('./Constants');
 
-  useEffect(() => {
-    if (!isNew && eventId) {
-    fetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' })
+
+  const qrUrl = `${apiUrl}/events/${eventId}/qr`;
+
+function fetchEventData(eventId) {
+  fetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' })
       .then(res => {
         if (res.status === 401) navigate('/login');
         return res.json();
       })
       .then(data => setEventData(data))
       .catch(err => console.error(err));
+}
+
+
+  useEffect(() => {
+    if (!isNew && eventId) {
+      fetchEventData(eventId)
     }
     else
     {
@@ -56,8 +64,8 @@ export default function EditEventPage({ isNew }) {
 
       if (res.ok) {
         const data = await res.json();
-        alert(`Short URL created: ${data.shortUrl}`);
-        navigate(`/edit/${eventId}`)
+        alert(`Short URL created`);
+        fetchEventData(eventId)
       } else {
         alert('Failed to create short URL');
       }
@@ -133,7 +141,14 @@ export default function EditEventPage({ isNew }) {
         onChange={val => handleChange('TermsAndConditions', val)}
         />
 
-        
+        {!isNew && <TextField
+        label="ShortUrl"
+        value={eventData != null && eventData.ShortUrl}
+        disabled={true}
+        />} {!isNew && !eventData.ShortUrl && <Button variant='contained' onClick={handleCreateShortUrl}> Create Short URL </Button>}
+
+
+ <img src={qrUrl} alt="QR Code" />
 
      <CheckBoxInputField
         label="Event Active?"
