@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, CardContent, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
-
-
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import GDPRNotice from './Controls/GDPRHeader';
 
 const EventGiftAidPage = () => {
   const { eventId } = useParams();
@@ -53,6 +54,8 @@ const EventGiftAidPage = () => {
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
          <Typography variant="h5" sx={{mb: 2 }}>Gift Aid {event ? ` - ${event.EventName}` : ''}</Typography>
 
+ <GDPRNotice/>
+
         <Table >
           <TableHead>
             <TableRow>
@@ -71,9 +74,9 @@ const EventGiftAidPage = () => {
                 {reg.ParentEmail}<br/>
                 {reg.ParentMobile}</TableCell>
                 <TableCell>{reg.GiftAidAddress}</TableCell>
-                <TableCell>{reg.Paid ? 'Yes' : 'No'}</TableCell>
+                <TableCell><>{reg.GiftAid ? <CheckIcon/> : <CloseIcon/>}</></TableCell>
                 <TableCell>£{parseFloat(reg.DonationTotal || 0).toFixed(2)}</TableCell>
-                <TableCell>{reg.GiftAid ? 'Yes' : 'No'}</TableCell>
+                <TableCell>{reg.GiftAid ? <CheckIcon/> : <CloseIcon/>}</TableCell>
                 <TableCell>£{parseFloat(reg.DonationTotal * 0.2 || 0).toFixed(2)}</TableCell>
 
                 

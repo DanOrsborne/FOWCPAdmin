@@ -7,6 +7,7 @@ const qr = require("qr-image");
 const authMiddleware = require('../utils/authMiddleware');
 const { createShortUrl } = require('../utils/urlUtils');
 const router = express.Router();
+const axios = require('axios');
 
 const SUMUP_API_KEY =  process.env.SUMUP_API_KEY
 

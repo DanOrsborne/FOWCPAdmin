@@ -4,6 +4,8 @@ import { Box, Typography, Button, CircularProgress, Table, TableHead, TableRow, 
 import Header from './Header';
 import Menu from './Menu';
 import MD5 from 'crypto-js/md5';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 const EventFailedPaymentPage = () => {
   const { eventId } = useParams();
@@ -102,7 +104,7 @@ const failedPaymentChaseLink = (registration) => {
           <TableHead>
             <TableRow>
               <TableCell>Parent Details</TableCell>
-              <TableCell>DonationAnswer</TableCell>
+              <TableCell>Donation Answer</TableCell>
               <TableCell>Paid</TableCell>
               <TableCell>Donation Total</TableCell>
               <TableCell>Payment Chased</TableCell>
@@ -117,10 +119,10 @@ const failedPaymentChaseLink = (registration) => {
                   {reg.ParentEmail}<br />
                   {reg.ParentMobile}
                 </TableCell>
-                <TableCell>{reg.DonationAnswer ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{reg.Paid ? 'Yes' : 'No'}</TableCell>
+                <TableCell><>{reg.DonationAnswer ? <CheckIcon/> : <CloseIcon/>}</></TableCell>
+                <TableCell><>{reg.Paid ? <CheckIcon/> : <CloseIcon/>}</></TableCell>
                 <TableCell>£{parseFloat(reg.DonationTotal || 0).toFixed(2)}</TableCell>
-                <TableCell>{reg.failedPaymentChased ? 'Yes' : 'No'}</TableCell>
+                <TableCell>{reg.failedPaymentChased ? <CheckIcon/> : <CloseIcon/>}</TableCell>
                 <TableCell>{reg.SumUpStatus}
                   <br />SumUp Checkout: {reg.CheckoutReference}
                   <br />CustomerId: {reg.CustomerId}

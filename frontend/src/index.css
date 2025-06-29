@@ -40,3 +40,27 @@ main.MuiBox-root{
 div.MuiPaper-root{
     overflow: hidden;
 }
+
+
+.only-print {
+  display: none !important;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .only-print {
+    display: table-cell !important; /* or inline, inline-block, flex, etc., depending on element */
+  }
+
+
+  table.MuiTable-root td{ /*Compress table on print*/
+    font-size: 12px;
+    line-height: 13px;
+    padding: 5px;
+
+
+  }
+}

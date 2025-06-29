@@ -11,7 +11,7 @@ export default function Header() {
   };
 
   return (
-    <AppBar position="fixed"  sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
+    <AppBar  className='no-print' position="fixed"  sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
       <Toolbar>
         
         <Typography variant="h6" sx={{ flexGrow: 1 }}>

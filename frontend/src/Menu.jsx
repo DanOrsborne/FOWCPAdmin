@@ -9,7 +9,7 @@ const Menu = () => {
   const navigate = useNavigate();
 
   return (
-    <Drawer open={true} sx={{
+    <Drawer  className='no-print' open={true} sx={{
           width: drawerWidth,
           flexShrink: 0,
           '& .MuiDrawer-paper': {

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
-
-
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import GDPRNotice from './Controls/GDPRHeader';
 
 const EventSummaryPage = () => {
   const { eventId } = useParams();
@@ -76,9 +78,13 @@ const EventSummaryPage = () => {
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
          <Typography variant="h5" sx={{ mb: 2 }}>Signups {event ? ` - ${event.EventName}` : ''}</Typography>
 
+    <GDPRNotice/>
+
+
         <Table >
           <TableHead>
             <TableRow>
+              <TableCell sx={{minWidth:50}} className='only-print'>Check In/Out</TableCell>
               <TableCell>Parent Details</TableCell>
               <TableCell>Paid</TableCell>
               <TableCell>Donation Total</TableCell>
@@ -87,34 +93,47 @@ const EventSummaryPage = () => {
               <TableCell>{event.EventQuestion2Name}</TableCell>
               <TableCell>{event.EventQuestion3Name}</TableCell>
               <TableCell>{event.EventQuestion4Name}</TableCell>
-               <TableCell>Checkout Reference</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>{event.EventQuestion5Name}</TableCell>
+              <TableCell>{event.EventQuestion6Name}</TableCell>
+              <TableCell>{event.EventQuestion7Name}</TableCell>
+              <TableCell>{event.EventQuestion8Name}</TableCell>
+              <TableCell>{event.EventQuestion9Name}</TableCell>
+              <TableCell>{event.EventQuestion10Name}</TableCell>
+               <TableCell  className='no-print'>Checkout Reference</TableCell>
+              <TableCell className='no-print'>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {registrations.map((reg) => (
               <TableRow key={reg.id}>
+                <TableCell className='only-print'><CheckBoxOutlineBlankIcon/><CheckBoxOutlineBlankIcon/></TableCell>
                 <TableCell>{reg.ParentName}<br/>
                 {reg.ParentEmail}<br/>
                 {reg.ParentMobile}</TableCell>
-                <TableCell>{reg.Paid ? 'Yes' : 'No'}</TableCell>
+                <TableCell><>{reg.Paid ? <CheckIcon/> : <CloseIcon/>}</></TableCell>
                 <TableCell>£{parseFloat(reg.DonationTotal || 0).toFixed(2)}</TableCell>
-                <TableCell>{reg.GiftAid ? 'Yes' : 'No'}</TableCell>
+                <TableCell><>{reg.GiftAid ? <CheckIcon/> : <CloseIcon/>}</></TableCell>
                 <TableCell>{event.EventQuestion1Id == reg.EventQuestion1Name ? reg.EventQuestion1Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion2Id == reg.EventQuestion2Name ? reg.EventQuestion2Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion3Id == reg.EventQuestion3Name ? reg.EventQuestion3Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion4Id == reg.EventQuestion4Name ? reg.EventQuestion4Answer : ""}</TableCell>
-                 <TableCell>{reg.CheckoutReference}</TableCell>
-                <TableCell>
+                <TableCell>{event.EventQuestion5Id == reg.EventQuestion5Name ? reg.EventQuestion5Answer : ""}</TableCell>
+                <TableCell>{event.EventQuestion6Id == reg.EventQuestion6Name ? reg.EventQuestion6Answer : ""}</TableCell>
+                <TableCell>{event.EventQuestion7Id == reg.EventQuestion7Name ? reg.EventQuestion7Answer : ""}</TableCell>
+                <TableCell>{event.EventQuestion8Id == reg.EventQuestion8Name ? reg.EventQuestion8Answer : ""}</TableCell>
+                <TableCell>{event.EventQuestion9Id == reg.EventQuestion9Name ? reg.EventQuestion9Answer : ""}</TableCell>
+                <TableCell>{event.EventQuestion10Id == reg.EventQuestion10Name ? reg.EventQuestion10Answer : ""}</TableCell>
+                <TableCell className='no-print'>{reg.CheckoutReference}</TableCell>
+                <TableCell className='no-print'>
                   <Button onClick={() => navigate(`/registrations/${reg.EventName}/edit/${reg.CustomerId}`)}>Edit</Button>
-                {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(reg.EventId, reg.CustomerId)}>Delete</Button>)}
+                  {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(reg.EventId, reg.CustomerId)}>Delete</Button>)}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
 
-        <Button variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>
+        <Button className='no-print' variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>
       </Box>
     </Box>
   );
