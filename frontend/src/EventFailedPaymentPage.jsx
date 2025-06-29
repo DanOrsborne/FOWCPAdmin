@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
-
+import MD5 from 'crypto-js/md5';
 
 const EventFailedPaymentPage = () => {
   const { eventId } = useParams();
@@ -12,6 +12,7 @@ const EventFailedPaymentPage = () => {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const { apiUrl } = require('./Constants');
+  
 
   useEffect(() => {
 
@@ -59,6 +60,33 @@ const EventFailedPaymentPage = () => {
 
   }, [eventId]);
 
+
+const failedPaymentChaseLink = (registration) => {
+    if (!registration ) {
+        return "Invalid request" ;
+    }
+
+    if (registration.Paid) {
+        return "Already Paid" ;
+    }
+
+    if (!registration.DonationAnswer) {
+        return "Didn't want to donate";
+    }
+
+    if (registration.FailedPaymentChased) {
+        return "Failed payment already chased";
+    }
+
+
+    const checksum = MD5(registration.CustomerId + "sfnwe324SDFs!!").toString().toUpperCase();
+   
+    const paymentLinkURL = `https://fowcpevents20240928105048.azurewebsites.net/api/FOWCPEventSignup_NewPaymentLink?customerid=${registration.CustomerId}&checksum=${checksum}&code=QkuUT2s7dzjoi1OnTR6apSg12tCK0_BvV0k5i7DGXhfHAzFukn6guw%3D%3D`;
+
+    return paymentLinkURL;
+}
+
+
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
   return (
@@ -93,7 +121,12 @@ const EventFailedPaymentPage = () => {
                 <TableCell>{reg.Paid ? 'Yes' : 'No'}</TableCell>
                 <TableCell>£{parseFloat(reg.DonationTotal || 0).toFixed(2)}</TableCell>
                 <TableCell>{reg.failedPaymentChased ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{reg.SumUpStatus}<br />{reg.CheckoutReference}</TableCell>
+                <TableCell>{reg.SumUpStatus}
+                  <br />SumUp Checkout: {reg.CheckoutReference}
+                  <br />CustomerId: {reg.CustomerId}
+                  <br/> Retry Payment: {failedPaymentChaseLink(reg)} 
+                </TableCell>
+                <TableCell></TableCell>
               </TableRow>
             ))}
           </TableBody>

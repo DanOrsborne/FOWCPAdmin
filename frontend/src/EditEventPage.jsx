@@ -16,7 +16,7 @@ export default function EditEventPage({ isNew }) {
   const { apiUrl } = require('./Constants');
 
 
-  const qrUrl = `${apiUrl}/events/${eventId}/qr`;
+const qrUrl = `${apiUrl}/events/${eventId}/qr`;
 
 function fetchEventData(eventId) {
   fetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' })
@@ -148,7 +148,7 @@ function fetchEventData(eventId) {
         />} {!isNew && !eventData.ShortUrl && <Button variant='contained' onClick={handleCreateShortUrl}> Create Short URL </Button>}
 
 
- <img src={qrUrl} alt="QR Code" />
+    {!isNew  && eventData.ShortUrl && <img src={qrUrl} alt="QR Code" />}
 
      <CheckBoxInputField
         label="Event Active?"
@@ -162,6 +162,14 @@ function fetchEventData(eventId) {
         value={eventData != null &&eventData.MultiTicketEvent || false }
         onChange={val => handleChange('MultiTicketEvent', val)}
      />
+
+{eventData.MultiTicketEvent && (<TextInputField
+        label="Max Tickets"
+        value={(eventData != null &&eventData.MaxTickets || '')}
+        onChange={val => handleChange('MaxTickets', val)}
+         type="number"
+        />)}
+     
 
 
       <TextInputField
@@ -177,6 +185,29 @@ function fetchEventData(eventId) {
         value={dayjs(eventData != null &&eventData.EventDateTime).format('YYYY-MM-DDTHH:mm')}
         onChange={val => handleChange('EventDateTime', val)}
          type="datetime-local"
+        />
+
+
+<CheckBoxInputField
+        label="Hide Allergy Question?"
+        value={eventData != null &&eventData.HideAllergyQuestion || false}
+        onChange={val => handleChange('HideAllergyQuestion', val)}
+     />
+
+
+
+<CheckBoxInputField
+        label="Hide No Donation?"
+        value={eventData != null &&eventData.HideNoDonation || false}
+        onChange={val => handleChange('HideNoDonation', val)}
+     />
+
+
+<TextInputField
+        label="Call to Action Text"
+        value={(eventData != null &&eventData.CTAText || 'Register')}
+        onChange={val => handleChange('CTAText', val)}
+        
         />
 
 

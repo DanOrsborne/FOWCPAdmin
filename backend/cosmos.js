@@ -9,10 +9,17 @@ const usersDB = 'Users';
 
 const client = new CosmosClient({ endpoint, key });
 
+const eventsContainer = client.database(databaseName).container(eventsDB);
+const usersContainer = client.database(databaseName).container(usersDB);
+const registrationsContainer = client.database(databaseName).container(registrationsDB);
+
 module.exports = {
   client,
   databaseName,
   registrationsDB,
   usersDB,
-    eventsDB
+    eventsDB, 
+    eventsContainer, 
+    usersContainer, 
+    registrationsContainer
 };

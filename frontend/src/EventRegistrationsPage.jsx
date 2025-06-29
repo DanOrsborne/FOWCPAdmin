@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Card, CardContent, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
 
@@ -13,6 +13,7 @@ const EventSummaryPage = () => {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const { apiUrl } = require('./Constants');
+  const username = sessionStorage.getItem('username');
 
   useEffect(() => {
 
@@ -26,7 +27,14 @@ const EventSummaryPage = () => {
       }
     };
     
-    const fetchRegistrations = async () => {
+    fetchRegistrations(eventId);
+
+
+    Promise.all([fetchEvent(), fetchRegistrations(eventId)]).finally(() => setLoading(false));
+  }, [eventId]);
+
+
+   const fetchRegistrations = async (eventId) => {
       try {
         const res = await fetch(`${apiUrl}/events/${eventId}/registrations`, { credentials: 'include' });
         const data = await res.json();
@@ -36,8 +44,28 @@ const EventSummaryPage = () => {
       }
     };
 
-    Promise.all([fetchEvent(), fetchRegistrations()]).finally(() => setLoading(false));
-  }, [eventId]);
+  const handleDelete = async (eventId, registrationId) => {
+    if (!window.confirm('Are you sure you want to delete this signup?')) return;
+
+    try {
+      const res = await fetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      if (res.ok) {
+        alert('Registration deleted successfully');
+        fetchRegistrations(eventId);
+      } else {
+        const data = await res.json();
+        alert(`Failed to delete registration: ${data.message}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred while deleting the registration');
+    }
+  };
+
 
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
@@ -77,7 +105,9 @@ const EventSummaryPage = () => {
                 <TableCell>{event.EventQuestion3Id == reg.EventQuestion3Name ? reg.EventQuestion3Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion4Id == reg.EventQuestion4Name ? reg.EventQuestion4Answer : ""}</TableCell>
                  <TableCell>{reg.CheckoutReference}</TableCell>
-                <TableCell><Button onClick={() => navigate(`/registrations/${reg.EventName}/edit/${reg.CustomerId}`)}>Edit</Button>
+                <TableCell>
+                  <Button onClick={() => navigate(`/registrations/${reg.EventName}/edit/${reg.CustomerId}`)}>Edit</Button>
+                {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(reg.EventId, reg.CustomerId)}>Delete</Button>)}
                 </TableCell>
               </TableRow>
             ))}
