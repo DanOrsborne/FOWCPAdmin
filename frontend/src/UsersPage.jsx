@@ -127,7 +127,7 @@ export default function UsersPage() {
                 <TableCell>{u.Email}</TableCell>
                 <TableCell>{u.Enabled ? 'Yes' : 'No'}</TableCell>
                 <TableCell>
-                  <Button onClick={() => handleOpen(u)}>Edit</Button>
+                  <Button  sx={{mr:1}} onClick={() => handleOpen(u)}>Edit</Button>
                   <Button color="error" onClick={() => handleDelete(u.id)}>Delete</Button>
                 </TableCell>
               </TableRow>

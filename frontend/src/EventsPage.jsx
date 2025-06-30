@@ -97,14 +97,14 @@ export default function EventsPage() {
               <TableCell>{e.EventDateTime}</TableCell>
               <TableCell>{e.Active ? 'Yes' : 'No'}</TableCell>
               <TableCell>
-                <Button onClick={() => navigate(`/edit/${e.EventId}`)}>Edit</Button>
-                <Button  target='_blank' onClick={() => 
+                <Button sx={{mr:1}} onClick={() => navigate(`/edit/${e.EventId}`)}>Edit</Button>
+                <Button sx={{mr:1}}  target='_blank' onClick={() => 
                   window.open(`https://fowcpevents20240928105048.azurewebsites.net/api/FOWCPEventSignup?code=2R7-QJayuS3kFRIhlH2N-FhF0xSCQIKgLrotyAAEBHgsAzFuw1G4hQ==&eventid=${e.EventId}`, '_blank') }>View</Button>
-                <Button onClick={() => navigate(`/summary/${e.EventId}`)}>Summary</Button>
+                <Button sx={{mr:1}} onClick={() => navigate(`/summary/${e.EventId}`)}>Summary</Button>
                 
-                <Button onClick={() => navigate(`/registrations/${e.EventId}`)}>Signups</Button>
-                <Button onClick={() => navigate(`/checkin/${e.EventId}`)}>Check In</Button>
-                <Button onClick={() => navigate(`/giftaid/${e.EventId}`)}>Gift Aid</Button>
+                <Button sx={{mr:1}} onClick={() => navigate(`/registrations/${e.EventId}`)}>Signups</Button>
+                <Button sx={{mr:1}} onClick={() => navigate(`/checkin/${e.EventId}`)}>Check In</Button>
+                <Button sx={{mr:1}} onClick={() => navigate(`/giftaid/${e.EventId}`)}>Gift Aid</Button>
                 <Button onClick={() => navigate(`/failedpayments/${e.EventId}`)}>Failed Payments</Button>
                 {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(e.EventId)}>Delete</Button>)}
               </TableCell>
