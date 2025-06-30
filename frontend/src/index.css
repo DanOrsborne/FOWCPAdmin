@@ -12,7 +12,7 @@
 
 
 
-.MuiDrawer-root ul li div.Mui-selected, .MuiDrawer-root ul li div.Mui-selected:hover, button.MuiButtonBase-root
+.MuiDrawer-root ul li div.Mui-selected, .MuiDrawer-root ul li div.Mui-selected:hover, button.MuiButtonBase-root, header.MuiPaper-root
 {
     background-color:#48a89e !important;
     color: #fff;

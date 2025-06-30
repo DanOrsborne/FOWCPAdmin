@@ -18,6 +18,7 @@ const EventRegistrationPage = () => {
   const username = sessionStorage.getItem('username');
     const [parentFilter, setParentFilter] = useState('');
     const [childFilter, setChildFilter] = useState('');
+    const [sortConfig, setSortConfig] = useState({ key: 'ParentName', direction: 'asc' });
 
   useEffect(() => {
 
@@ -77,6 +78,34 @@ const EventRegistrationPage = () => {
   return parentMatch && childMatch;
 });
 
+
+const sortedRegistrations = [...filteredRegistrations].sort((a, b) => {
+  const { key, direction } = sortConfig;
+
+  let aValue = a[key] ?? '';
+  let bValue = b[key] ?? '';
+
+  if (key === '_ts') {
+    aValue = aValue || 0;
+    bValue = bValue || 0;
+  } else {
+    aValue = aValue.toString().toLowerCase();
+    bValue = bValue.toString().toLowerCase();
+  }
+
+  if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+  if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+  return 0;
+});
+
+
+const handleSort = (key) => {
+  setSortConfig((prev) => {
+    const direction = prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc';
+    return { key, direction };
+  });
+};
+
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
   return (
@@ -114,13 +143,34 @@ const EventRegistrationPage = () => {
 
         <Table >
           <TableHead>
-            <TableRow>
-              <TableCell sx={{minWidth:50}} className='only-print'>Check In/Out</TableCell>
-              <TableCell>Parent Details</TableCell>
-              <TableCell>Paid</TableCell>
-              <TableCell>Donation Total</TableCell>
-              <TableCell>Gift Aid</TableCell>
-              <TableCell>{event.EventQuestion1Name}</TableCell>
+  <TableRow>
+    <TableCell sx={{ minWidth: 50 }} className="only-print">Check In/Out</TableCell>
+    
+    <TableCell sx={{
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    color: sortConfig.key === 'ParentName' ? '#48a89e' : 'inherit',
+    '&:hover': { textDecoration: 'underline' }
+  }} onClick={() => handleSort('ParentName')} >
+      Parent Details {sortConfig.key === 'ParentName' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+    </TableCell>
+    
+    <TableCell>Paid</TableCell>
+    <TableCell>Donation Total</TableCell>
+    <TableCell>Gift Aid</TableCell>
+    
+    <TableCell  sx={{
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    color: sortConfig.key === 'ParentName' ? '#48a89e' : 'inherit',
+    '&:hover': { textDecoration: 'underline' }
+  }} onClick={() => handleSort('EventQuestion1Answer')} >
+      {event.EventQuestion1Name} {sortConfig.key === 'EventQuestion1Answer' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+    </TableCell>
+
+
+
+
               <TableCell>{event.EventQuestion2Name}</TableCell>
               <TableCell>{event.EventQuestion3Name}</TableCell>
               <TableCell>{event.EventQuestion4Name}</TableCell>
@@ -130,12 +180,23 @@ const EventRegistrationPage = () => {
               <TableCell>{event.EventQuestion8Name}</TableCell>
               <TableCell>{event.EventQuestion9Name}</TableCell>
               <TableCell>{event.EventQuestion10Name}</TableCell>
-               <TableCell  className='no-print'>Signup Date</TableCell>
-              <TableCell className='no-print'>Actions</TableCell>
-            </TableRow>
-          </TableHead>
+
+    {/* Other columns... */}
+
+    <TableCell  sx={{
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    color: sortConfig.key === 'ParentName' ? '#48a89e' : 'inherit',
+    '&:hover': { textDecoration: 'underline' }
+  }} onClick={() => handleSort('_ts')}  className="no-print">
+      Signup Date {sortConfig.key === '_ts' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+    </TableCell>
+
+    <TableCell className="no-print">Actions</TableCell>
+  </TableRow>
+</TableHead>
           <TableBody>
-            {filteredRegistrations.sort((a, b) => a.EventQuestion1Answer.localeCompare(b.EventQuestion1Answer)).map((reg) => (
+            {sortedRegistrations.map((reg) => (
               <TableRow key={reg.id}>
                 <TableCell className='only-print'><CheckBoxOutlineBlankIcon/><CheckBoxOutlineBlankIcon/></TableCell>
                 <TableCell>{reg.ParentName}<br/>
