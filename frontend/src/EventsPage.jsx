@@ -84,6 +84,7 @@ export default function EventsPage() {
                 <Button  target='_blank' onClick={() => 
                   window.open(`https://fowcpevents20240928105048.azurewebsites.net/api/FOWCPEventSignup?code=2R7-QJayuS3kFRIhlH2N-FhF0xSCQIKgLrotyAAEBHgsAzFuw1G4hQ==&eventid=${e.EventId}`, '_blank') }>View</Button>
                 <Button onClick={() => navigate(`/summary/${e.EventId}`)}>Summary</Button>
+                <Button onClick={() => navigate(`/checkin/${e.EventId}`)}>Check In</Button>
                 <Button onClick={() => navigate(`/registrations/${e.EventId}`)}>Signups</Button>
                 <Button onClick={() => navigate(`/giftaid/${e.EventId}`)}>Gift Aid</Button>
                 <Button onClick={() => navigate(`/failedpayments/${e.EventId}`)}>Failed Payments</Button>

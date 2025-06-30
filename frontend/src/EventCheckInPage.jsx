@@ -7,15 +7,25 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import GDPRNotice from './Controls/GDPRHeader';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import { TextField } from '@mui/material'; // ADD THIS to your imports
 
-const EventRegistrationPage = () => {
+
+const EventCheckInPage = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const { apiUrl } = require('./Constants');
-  const username = sessionStorage.getItem('username');
+
+
+  // Inside your component:
+  const [parentFilter, setParentFilter] = useState('');
+  const [childFilter, setChildFilter] = useState('');
+
+
 
   useEffect(() => {
 
@@ -36,59 +46,109 @@ const EventRegistrationPage = () => {
   }, [eventId]);
 
 
-   const fetchRegistrations = async (eventId) => {
-      try {
-        const res = await fetch(`${apiUrl}/events/${eventId}/registrations`, { credentials: 'include' });
-        const data = await res.json();
-        setRegistrations(data);
-      } catch (err) {
-        console.error(err);
+
+const fetchRegistrations = async (eventId) => {
+  try {
+    const res = await fetch(`${apiUrl}/events/${eventId}/registrations`, { credentials: 'include' });
+    const data = await res.json();
+    setRegistrations(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+ 
+const handleCheckInOut = async (registrationId, action, value, warn, isCheckedIn) => {
+
+  let actionName = "";
+  if (action === "checkedIn" ) {
+    actionName = "Check In";
+
+  }
+  else if (action === "checkedOut") {
+    actionName = "Check Out";
+    if(!isCheckedIn && value) 
+      {
+        window.alert("You cannot check out a person who is not checked in");
+    return;
       }
-    };
+  }
 
-  const handleDelete = async (eventId, registrationId) => {
-    if (!window.confirm('Are you sure you want to delete this signup?')) return;
+  if(warn) {
+    if (!window.confirm(`Are you sure you want to remove this persons ${actionName}?`)) return;
 
-    try {
-      const res = await fetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      });
+  }
 
-      if (res.ok) {
-        alert('Registration deleted successfully');
-        fetchRegistrations(eventId);
-      } else {
-        const data = await res.json();
-        alert(`Failed to delete registration: ${data.message}`);
-      }
-    } catch (err) {
-      console.error(err);
-      alert('An error occurred while deleting the registration');
-    }
+    let jsonData = `{"${action}" : ${value}}`;
+
+    await fetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: jsonData
+    })
+      .then(res => res.json()) 
+      .catch(err => console.error(err));
+    
+
+    await fetchRegistrations(eventId);
   };
+
+  const clearFilters = () => {
+    setChildFilter("");
+    setParentFilter("");
+  }
+  
+
+
+  
+const filteredRegistrations = registrations.filter((reg) => {
+  const parentMatch = reg.ParentName?.toLowerCase().includes(parentFilter.toLowerCase());
+  const childMatch = reg.EventQuestion1Answer?.toLowerCase().includes(childFilter.toLowerCase());
+  return parentMatch && childMatch;
+});
 
 
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Header />
-      <Menu />
+
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
-         <Typography variant="h5" sx={{ mb: 2 }}>Signups {event ? ` - ${event.EventName}` : ''}</Typography>
 
-    <GDPRNotice/>
+      <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => navigate(-1)}>Back</Button>
 
+      <GDPRNotice/>
+
+         <Typography variant="h5" sx={{ mb: 2 }}>Check In {event ? ` - ${event.EventName}` : ''}</Typography>
+
+
+
+<Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+  <TextField
+    label="Filter by Parent Name"
+    variant="outlined"
+    size="small"
+    value={parentFilter}
+    onChange={(e) => setParentFilter(e.target.value)}
+  />
+  <TextField
+    label="Filter by Child Name"
+    variant="outlined"
+    size="small"
+    value={childFilter}
+    onChange={(e) => setChildFilter(e.target.value)}
+  />
+
+  <Button disabled={!parentFilter && !childFilter} variant="contained" sx={{ mt: 0 }} onClick={() => clearFilters()}>Clear</Button>
+</Box>
 
         <Table >
           <TableHead>
             <TableRow>
-              <TableCell sx={{minWidth:50}} className='only-print'>Check In/Out</TableCell>
+              <TableCell sx={{minWidth:50}} >Check In/Out</TableCell>
               <TableCell>Parent Details</TableCell>
-              <TableCell>Paid</TableCell>
-              <TableCell>Donation Total</TableCell>
-              <TableCell>Gift Aid</TableCell>
+            
               <TableCell>{event.EventQuestion1Name}</TableCell>
               <TableCell>{event.EventQuestion2Name}</TableCell>
               <TableCell>{event.EventQuestion3Name}</TableCell>
@@ -99,20 +159,21 @@ const EventRegistrationPage = () => {
               <TableCell>{event.EventQuestion8Name}</TableCell>
               <TableCell>{event.EventQuestion9Name}</TableCell>
               <TableCell>{event.EventQuestion10Name}</TableCell>
-               <TableCell  className='no-print'>Checkout Reference</TableCell>
-              <TableCell className='no-print'>Actions</TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
-            {registrations.sort((a, b) => a.EventQuestion1Answer.localeCompare(b.EventQuestion1Answer)).map((reg) => (
+            {filteredRegistrations.sort((a, b) => a.EventQuestion1Answer.localeCompare(b.EventQuestion1Answer)).map((reg) => (
               <TableRow key={reg.id}>
-                <TableCell className='only-print'><CheckBoxOutlineBlankIcon/><CheckBoxOutlineBlankIcon/></TableCell>
+                <TableCell ><>{reg.checkedIn ? <CheckBoxIcon sx={{color:'green'}}  onClick={() => handleCheckInOut(reg.CustomerId, "checkedIn", false, true)} />
+                : <CheckBoxOutlineBlankIcon onClick={() => handleCheckInOut(reg.CustomerId, "checkedIn", true, false)} />}
+                  {reg.checkedOut ? <DisabledByDefaultIcon sx={{color:'red'}}  onClick={() => handleCheckInOut(reg.CustomerId, "checkedOut", false, true)} />
+                : <CheckBoxOutlineBlankIcon onClick={() => handleCheckInOut(reg.CustomerId, "checkedOut", true, false, reg.checkedIn )} />}</>
+                  </TableCell>
                 <TableCell>{reg.ParentName}<br/>
                 {reg.ParentEmail}<br/>
                 {reg.ParentMobile}</TableCell>
-                <TableCell><>{reg.Paid ? <CheckIcon/> : <CloseIcon/>}</></TableCell>
-                <TableCell>£{parseFloat(reg.DonationTotal || 0).toFixed(2)}</TableCell>
-                <TableCell><>{reg.GiftAid ? <CheckIcon/> : <CloseIcon/>}</></TableCell>
+              
                 <TableCell>{event.EventQuestion1Id == reg.EventQuestion1Name ? reg.EventQuestion1Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion2Id == reg.EventQuestion2Name ? reg.EventQuestion2Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion3Id == reg.EventQuestion3Name ? reg.EventQuestion3Answer : ""}</TableCell>
@@ -123,11 +184,7 @@ const EventRegistrationPage = () => {
                 <TableCell>{event.EventQuestion8Id == reg.EventQuestion8Name ? reg.EventQuestion8Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion9Id == reg.EventQuestion9Name ? reg.EventQuestion9Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion10Id == reg.EventQuestion10Name ? reg.EventQuestion10Answer : ""}</TableCell>
-                <TableCell className='no-print'>{reg.CheckoutReference}</TableCell>
-                <TableCell className='no-print'>
-                  <Button onClick={() => navigate(`/registrations/${reg.EventName}/edit/${reg.CustomerId}`)}>Edit</Button>
-                  {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(reg.EventId, reg.CustomerId)}>Delete</Button>)}
-                </TableCell>
+                
               </TableRow>
             ))}
           </TableBody>
@@ -139,4 +196,4 @@ const EventRegistrationPage = () => {
   );
 };
 
-export default EventRegistrationPage;
+export default EventCheckInPage;
