@@ -50,7 +50,7 @@ const EventRegistrationPage = () => {
     }
   };
 
-  const handleDelete = async (eventId, registrationId) => {
+  const handleDelete = async (registrationId) => {
     if (!window.confirm('Are you sure you want to delete this signup?')) return;
 
     try {
@@ -111,6 +111,26 @@ const EventRegistrationPage = () => {
     setChildFilter("");
     setParentFilter("");
   }
+
+  const markAsAcknowledged = async (registrationId, ts) => {
+    // Logic to mark the registration as acknowledged
+    if (!window.confirm('Are you sure you want to mark this registration as acknowledged?')) return;
+
+    
+    await apiFetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: `{"EmailAckSent" : true, "SignupDateTime": ${ts}}`
+
+    })
+      .then(res => res.json())
+      .then(() => fetchRegistrations(eventId))
+      .catch(err => console.error(err));
+      
+
+
+  };
 
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
@@ -223,8 +243,11 @@ const EventRegistrationPage = () => {
                 <TableCell>{event.EventQuestion10Id == reg.EventQuestion10Name ? reg.EventQuestion10Answer : ""}</TableCell>
                 <TableCell className='no-print'>{((d) => `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear() % 100} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`)(new Date(reg._ts * 1000))}</TableCell>
                 <TableCell className='no-print'>
-                  <Button onClick={() => navigate(`/registrations/${reg.EventName}/edit/${reg.CustomerId}`)}>Edit</Button>
-                  {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(reg.EventId, reg.CustomerId)}>Delete</Button>)}
+                  <Button sx={{ mr: 1 }} onClick={() => navigate(`/registrations/${reg.EventName}/edit/${reg.CustomerId}`)}>Edit</Button>
+                  {event.EmailAckRequired && (<Button disabled={reg.EmailAckSent} sx={{ mr: 1 }} onClick={() => markAsAcknowledged(reg.CustomerId, reg._ts)}>Acknowledged</Button>)}
+                  
+                  
+                  {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(reg.CustomerId)}>Delete</Button>)}
                 </TableCell>
               </TableRow>
             ))}

@@ -173,7 +173,7 @@ export default function EditEventPage({ isNew }) {
 
 
         <TextInputField
-          label="Event Donation (£)"
+          label="Event Suggested Donation (£)"
           value={(eventData != null && eventData.EventDonation || '').replace('£', '')}
           onChange={val => handleChange('EventDonation', `£${val}`)}
           type="number"
@@ -200,6 +200,13 @@ export default function EditEventPage({ isNew }) {
           label="Hide No Donation?"
           value={eventData != null && eventData.HideNoDonation || false}
           onChange={val => handleChange('HideNoDonation', val)}
+        />
+
+
+ <CheckBoxInputField
+          label="Signup needs Email Acknowledgment?"
+          value={eventData != null && eventData.EmailAckRequired || false}
+          onChange={val => handleChange('EmailAckRequired', val)}
         />
 
 

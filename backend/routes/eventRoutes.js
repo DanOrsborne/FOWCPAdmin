@@ -274,6 +274,9 @@ router.delete('/events/:eventId/registrations/:registrationId', authMiddleware, 
   const registrationId = req.params.registrationId;
   const eventId = req.params.eventId;
 
+
+  console.log(registrationId)
+
   try {
     // Find the event by EventID
     const querySpec = {
@@ -290,7 +293,7 @@ router.delete('/events/:eventId/registrations/:registrationId', authMiddleware, 
     const registration = resources[0];
 
 
-    if (registration.eventId == eventId) {
+    if (registration.EventName == eventId) {
       // Delete the registration by id and partition key
       await registrationsContainer.item(registration.id, registration.CustomerId).delete();
       res.json({ message: 'Registration deleted' });
