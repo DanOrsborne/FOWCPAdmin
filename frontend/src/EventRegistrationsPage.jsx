@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab } from '@mui/material';
+import { TextField, Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
 import CheckIcon from '@mui/icons-material/Check';
@@ -16,6 +16,8 @@ const EventRegistrationPage = () => {
   const [loading, setLoading] = useState(true);
   const { apiUrl } = require('./Constants');
   const username = sessionStorage.getItem('username');
+    const [parentFilter, setParentFilter] = useState('');
+    const [childFilter, setChildFilter] = useState('');
 
   useEffect(() => {
 
@@ -69,6 +71,12 @@ const EventRegistrationPage = () => {
   };
 
 
+  const filteredRegistrations = registrations.filter((reg) => {
+  const parentMatch = reg.ParentName?.toLowerCase().includes(parentFilter.toLowerCase());
+  const childMatch = reg.EventQuestion1Answer?.toLowerCase().includes(childFilter.toLowerCase());
+  return parentMatch && childMatch;
+});
+
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
   return (
@@ -76,10 +84,33 @@ const EventRegistrationPage = () => {
       <Header />
       <Menu />
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
+
+ <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => navigate(-1)}>Back</Button>
+
+  <GDPRNotice/>
+
+
          <Typography variant="h5" sx={{ mb: 2 }}>Signups {event ? ` - ${event.EventName}` : ''}</Typography>
 
-    <GDPRNotice/>
+  
+<Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+  <TextField
+    label="Filter by Parent Name"
+    variant="outlined"
+    size="small"
+    value={parentFilter}
+    onChange={(e) => setParentFilter(e.target.value)}
+  />
+  <TextField
+    label="Filter by Child Name"
+    variant="outlined"
+    size="small"
+    value={childFilter}
+    onChange={(e) => setChildFilter(e.target.value)}
+  />
 
+  <Button disabled={!parentFilter && !childFilter} variant="contained" sx={{ mt: 0 }} onClick={() => clearFilters()}>Clear</Button>
+</Box>
 
         <Table >
           <TableHead>
@@ -99,12 +130,12 @@ const EventRegistrationPage = () => {
               <TableCell>{event.EventQuestion8Name}</TableCell>
               <TableCell>{event.EventQuestion9Name}</TableCell>
               <TableCell>{event.EventQuestion10Name}</TableCell>
-               <TableCell  className='no-print'>Checkout Reference</TableCell>
+               <TableCell  className='no-print'>Signup Date</TableCell>
               <TableCell className='no-print'>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {registrations.sort((a, b) => a.EventQuestion1Answer.localeCompare(b.EventQuestion1Answer)).map((reg) => (
+            {filteredRegistrations.sort((a, b) => a.EventQuestion1Answer.localeCompare(b.EventQuestion1Answer)).map((reg) => (
               <TableRow key={reg.id}>
                 <TableCell className='only-print'><CheckBoxOutlineBlankIcon/><CheckBoxOutlineBlankIcon/></TableCell>
                 <TableCell>{reg.ParentName}<br/>
@@ -123,7 +154,7 @@ const EventRegistrationPage = () => {
                 <TableCell>{event.EventQuestion8Id == reg.EventQuestion8Name ? reg.EventQuestion8Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion9Id == reg.EventQuestion9Name ? reg.EventQuestion9Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion10Id == reg.EventQuestion10Name ? reg.EventQuestion10Answer : ""}</TableCell>
-                <TableCell className='no-print'>{reg.CheckoutReference}</TableCell>
+                <TableCell className='no-print'>{((d)=>`${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()%100} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`)(new Date(reg._ts*1000))}</TableCell>
                 <TableCell className='no-print'>
                   <Button onClick={() => navigate(`/registrations/${reg.EventName}/edit/${reg.CustomerId}`)}>Edit</Button>
                   {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(reg.EventId, reg.CustomerId)}>Delete</Button>)}
