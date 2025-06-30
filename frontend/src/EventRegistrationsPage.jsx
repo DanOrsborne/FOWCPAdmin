@@ -107,6 +107,11 @@ const EventRegistrationPage = () => {
     });
   };
 
+  const clearFilters = () => {
+    setChildFilter("");
+    setParentFilter("");
+  }
+
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
   return (
