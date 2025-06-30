@@ -16,7 +16,7 @@ export default function Header() {
       <Toolbar>
 
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Events Manager
+         FOWCP Events Manager
         </Typography>
         <Button color="inherit" onClick={handleLogout}>Logout</Button>
       </Toolbar>
