@@ -13,7 +13,7 @@ const SUMUP_API_KEY =  process.env.SUMUP_API_KEY
 
 
 router.get('/events', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   try {
     const activeOnly = req.query.active === 'true';
@@ -36,7 +36,7 @@ router.get('/events', authMiddleware, async (req, res) => {
 router.delete('/events/:eventId', authMiddleware, async (req, res) => {
 
  
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const eventId = req.params.eventId;
 
@@ -84,7 +84,7 @@ router.delete('/events/:eventId', authMiddleware, async (req, res) => {
 
 
 router.patch('/events/:eventId/createshorturl', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const eventId = req.params.eventId;
 
@@ -122,7 +122,7 @@ router.patch('/events/:eventId/createshorturl', authMiddleware, async (req, res)
 
 
 router.get('/events/:eventId/qr', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const eventId = req.params.eventId;
 
@@ -153,7 +153,7 @@ router.get('/events/:eventId/qr', authMiddleware, async (req, res) => {
 });
 
 router.post('/events', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const newEvent = req.body;
   const newId = uuidv4();
@@ -183,7 +183,7 @@ router.post('/events', authMiddleware, async (req, res) => {
 
 
 router.get('/events/:eventId', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const eventId = req.params.eventId;
   
@@ -205,7 +205,7 @@ router.get('/events/:eventId', authMiddleware, async (req, res) => {
 });
 
 router.put('/events/:eventId', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const eventId = req.params.eventId;
   const updatedData = req.body;
@@ -224,7 +224,7 @@ router.put('/events/:eventId', authMiddleware, async (req, res) => {
 
 
 router.get('/events/:eventId/registrations', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const eventId = req.params.eventId;
 
@@ -248,7 +248,7 @@ router.get('/events/:eventId/registrations', authMiddleware, async (req, res) =>
 
 
 router.get('/events/:eventId/registrations/:registrationId', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   try {
     const registrationId = req.params.registrationId;
@@ -269,7 +269,7 @@ router.get('/events/:eventId/registrations/:registrationId', authMiddleware, asy
 
 
 router.delete('/events/:eventId/registrations/:registrationId', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const registrationId = req.params.registrationId;
   const eventId = req.params.eventId;
@@ -309,7 +309,7 @@ router.delete('/events/:eventId/registrations/:registrationId', authMiddleware, 
 
 // Update a single registration by ID
 router.put('/events/:eventId/registrations/:registrationId', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
    const registrationId = req.params.registrationId;
   const updatedData = req.body;
@@ -341,7 +341,7 @@ let existing = resources[0];
 
 
 router.get('/events/:eventId/summary', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const eventId = req.params.eventId;
 
@@ -396,7 +396,7 @@ router.get('/events/:eventId/summary', authMiddleware, async (req, res) => {
 
 
 router.get('/registrations/:registrationId/sumup', authMiddleware, async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Unauthorized' });
+  
 
   const registrationId = req.params.registrationId;
 

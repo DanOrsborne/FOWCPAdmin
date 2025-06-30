@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Typography, Container, Table, TableBody, TableCell, TableHead, TableRow, Button, Select, MenuItem, Box, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { Typography,FormControl, Container, Table, TableBody, TableCell, TableHead, TableRow, Button, Select, MenuItem, Box, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Menu from './Menu';
@@ -47,6 +47,11 @@ export default function EventsPage() {
     }
   };
 
+
+ const handleAddEvent = (user = null) => {
+    navigate('/add-event')
+  };
+
   return (
 
 
@@ -60,10 +65,22 @@ export default function EventsPage() {
           
          
       <Typography variant="h5" sx={{  mb: 2 }}>Events</Typography>
-      <Select value={filter} onChange={e => setFilter(e.target.value)}>
-        <MenuItem value="active">Active Only</MenuItem>
-        <MenuItem value="all">All Events</MenuItem>
-      </Select>
+
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+  <Button variant="contained" color="primary" onClick={handleAddEvent}>
+    ADD EVENT
+  </Button>
+
+  <FormControl variant="outlined" size="small">
+    <Select  value={filter} onChange={e => setFilter(e.target.value)}>
+      <MenuItem value="active">Active Only</MenuItem>
+      <MenuItem value="all">All Events</MenuItem>
+    </Select>
+  </FormControl>
+</div>
+
+
       <Table>
         <TableHead>
           <TableRow>

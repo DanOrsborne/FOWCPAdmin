@@ -163,7 +163,7 @@ function fetchEventData(eventId) {
         onChange={val => handleChange('MultiTicketEvent', val)}
      />
 
-{eventData.MultiTicketEvent && (<TextInputField
+{eventData != null && eventData.MultiTicketEvent && (<TextInputField
         label="Max Tickets"
         value={(eventData != null &&eventData.MaxTickets || '')}
         onChange={val => handleChange('MaxTickets', val)}

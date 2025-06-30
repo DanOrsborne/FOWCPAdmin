@@ -19,25 +19,22 @@ const Menu = () => {
         }}         variant="permanent"
         anchor="left">
     <List sx={{ width: 200 }}>
-      <ListItem disablePadding>
-        <ListItemButton selected={location.pathname === '/add-event'} onClick={() => navigate('/add-event')}>
-          <ListItemText primary="Add Event" />
-        </ListItemButton>
-      </ListItem>
+      
       <ListItem disablePadding>
         <ListItemButton selected={location.pathname === '/' ||
+          location.pathname.startsWith('/add-event') ||
           location.pathname.startsWith('/failedpayments') ||
           location.pathname.startsWith('/edit') ||
           location.pathname.startsWith('/summary') ||
           location.pathname.startsWith('/registrations') ||
           location.pathname.startsWith('/giftaid')
         }onClick={() => navigate('/')}>
-          <ListItemText primary="List Events" />
+          <ListItemText primary="Events" />
         </ListItemButton>
       </ListItem>
       <ListItem disablePadding>
         <ListItemButton selected={location.pathname === '/users'} onClick={() => navigate('/users')}>
-          <ListItemText primary="List Users" />
+          <ListItemText primary="Users" />
         </ListItemButton>
       </ListItem>
       

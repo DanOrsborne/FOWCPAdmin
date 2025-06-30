@@ -112,9 +112,9 @@ const filteredRegistrations = registrations.filter((reg) => {
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex'}}>
 
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
+      <Box className='noMT' component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6}}>
 
       <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => navigate(-1)}>Back</Button>
 

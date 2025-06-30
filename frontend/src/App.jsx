@@ -6,10 +6,10 @@ import EventSummaryPage from './EventSummaryPage';
 import EventRegistrationsPage from './EventRegistrationsPage';
 import EventGiftAidPage from './EventGiftAidPage';
 import EventCheckInPage from './EventCheckInPage';
-
 import RegistrationEdit from './RegistrationEdit';
 import PrivateRoute from './PrivateRoute';
 import EventFailedPaymentPage from './EventFailedPaymentPage';
+import UsersPage from './UsersPage';
 
 export default function App() {
   return (
@@ -25,6 +25,7 @@ export default function App() {
           <Route path="/failedpayments/:eventId" element={<PrivateRoute><EventFailedPaymentPage /></PrivateRoute>} />
           <Route path="/add-event" element={<PrivateRoute><EditEvent isNew={true} /></PrivateRoute>} />
           <Route path="/checkin/:eventId" element={<PrivateRoute><EventCheckInPage /></PrivateRoute>} />
+           <Route path="/users" element={<PrivateRoute><UsersPage /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

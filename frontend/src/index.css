@@ -37,6 +37,11 @@ main.MuiBox-root{
       margin-top: 64px;
 }
 
+main.noMT
+{
+    margin-top: 0px !important;
+}
+
 div.MuiPaper-root{
     overflow: hidden;
 }
