@@ -3,7 +3,7 @@ import { Typography, FormControlLabel, Checkbox } from '@mui/material';
 
 export default function CheckBoxInputField({ label, value, onChange }) {
 
-const handleInputChange = (e) => {
+  const handleInputChange = (e) => {
     if (onChange) {
       onChange(e.target.checked);
     }
@@ -19,7 +19,7 @@ const handleInputChange = (e) => {
             onChange={handleInputChange}
           />
         }
- 
+
       />
 
 

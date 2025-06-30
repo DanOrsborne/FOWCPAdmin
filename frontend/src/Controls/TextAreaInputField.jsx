@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 
 export default function TextAreaInputField({ label, value, onChange }) {
 
-const handleInputChange = (content) => {
+  const handleInputChange = (content) => {
     if (onChange) {
       onChange(content);
     }
@@ -16,8 +16,8 @@ const handleInputChange = (content) => {
       <Typography variant="caption" >{label}</Typography>
       <ReactQuill
         value={value}
-         onChange={handleInputChange}
-        
+        onChange={handleInputChange}
+
       />
     </div>
   );

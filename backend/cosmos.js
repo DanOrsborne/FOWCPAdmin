@@ -1,7 +1,7 @@
 const { CosmosClient } = require('@azure/cosmos');
 
 const endpoint = process.env.COSMOS_DB_ENDPOINT;
-const key =  process.env.COSMOS_DB_KEY;
+const key = process.env.COSMOS_DB_KEY;
 const databaseName = 'Registrations';
 const registrationsDB = 'Items';
 const eventsDB = 'Events';
@@ -18,8 +18,8 @@ module.exports = {
   databaseName,
   registrationsDB,
   usersDB,
-    eventsDB, 
-    eventsContainer, 
-    usersContainer, 
-    registrationsContainer
+  eventsDB,
+  eventsContainer,
+  usersContainer,
+  registrationsContainer
 };

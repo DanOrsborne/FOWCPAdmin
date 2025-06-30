@@ -17,15 +17,15 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<PrivateRoute><EventsPage /></PrivateRoute>} />
-         <Route path="/edit/:eventId" element={<PrivateRoute><EditEvent /></PrivateRoute>} />
-          <Route path="/summary/:eventId" element={<PrivateRoute><EventSummaryPage /></PrivateRoute>} />
-          <Route path="/registrations/:eventId" element={<PrivateRoute><EventRegistrationsPage /></PrivateRoute>} />
-          <Route path="/registrations/:eventId/edit/:registrationId" element={<PrivateRoute><RegistrationEdit /></PrivateRoute>} />
-          <Route path="/giftaid/:eventId" element={<PrivateRoute><EventGiftAidPage /></PrivateRoute>} />
-          <Route path="/failedpayments/:eventId" element={<PrivateRoute><EventFailedPaymentPage /></PrivateRoute>} />
-          <Route path="/add-event" element={<PrivateRoute><EditEvent isNew={true} /></PrivateRoute>} />
-          <Route path="/checkin/:eventId" element={<PrivateRoute><EventCheckInPage /></PrivateRoute>} />
-           <Route path="/users" element={<PrivateRoute><UsersPage /></PrivateRoute>} />
+        <Route path="/edit/:eventId" element={<PrivateRoute><EditEvent /></PrivateRoute>} />
+        <Route path="/summary/:eventId" element={<PrivateRoute><EventSummaryPage /></PrivateRoute>} />
+        <Route path="/registrations/:eventId" element={<PrivateRoute><EventRegistrationsPage /></PrivateRoute>} />
+        <Route path="/registrations/:eventId/edit/:registrationId" element={<PrivateRoute><RegistrationEdit /></PrivateRoute>} />
+        <Route path="/giftaid/:eventId" element={<PrivateRoute><EventGiftAidPage /></PrivateRoute>} />
+        <Route path="/failedpayments/:eventId" element={<PrivateRoute><EventFailedPaymentPage /></PrivateRoute>} />
+        <Route path="/add-event" element={<PrivateRoute><EditEvent isNew={true} /></PrivateRoute>} />
+        <Route path="/checkin/:eventId" element={<PrivateRoute><EventCheckInPage /></PrivateRoute>} />
+        <Route path="/users" element={<PrivateRoute><UsersPage /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

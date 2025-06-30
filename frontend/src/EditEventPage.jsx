@@ -8,6 +8,7 @@ import Menu from './Menu';
 import TextInputField from './Controls/TextInputField';
 import TextAreaInputField from './Controls/TextAreaInputField';
 import CheckBoxInputField from './Controls/CheckBoxInputField';
+import { apiFetch } from './Controls/apiFetch';
 
 export default function EditEventPage({ isNew }) {
   const { eventId } = useParams();
@@ -16,25 +17,24 @@ export default function EditEventPage({ isNew }) {
   const { apiUrl } = require('./Constants');
 
 
-const qrUrl = `${apiUrl}/events/${eventId}/qr`;
+  const qrUrl = `${apiUrl}/events/${eventId}/qr`;
 
-function fetchEventData(eventId) {
-  fetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' })
+  async function fetchEventData(eventId) {
+    await apiFetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' })
       .then(res => {
         if (res.status === 401) navigate('/login');
         return res.json();
       })
       .then(data => setEventData(data))
       .catch(err => console.error(err));
-}
+  }
 
 
   useEffect(() => {
     if (!isNew && eventId) {
       fetchEventData(eventId)
     }
-    else
-    {
+    else {
       setEventData(null);
     }
   }, [eventId, isNew, navigate]);
@@ -57,7 +57,7 @@ function fetchEventData(eventId) {
 
   const handleCreateShortUrl = async () => {
     try {
-      const res = await fetch(`${apiUrl}/events/${eventId}/createshorturl`, {
+      const res = await apiFetch(`${apiUrl}/events/${eventId}/createshorturl`, {
         method: 'PATCH',
         credentials: 'include'
       });
@@ -75,10 +75,10 @@ function fetchEventData(eventId) {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
 
-     if (isNew) {
-      fetch(`${apiUrl}/events`, {
+    if (isNew) {
+      await apiFetch(`${apiUrl}/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -90,13 +90,13 @@ function fetchEventData(eventId) {
 
     } else {
 
-      fetch(`${apiUrl}/events/${eventId}`, {
+      await apiFetch(`${apiUrl}/events/${eventId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(eventData)
       })
-        .then(res => res.json()) 
+        .then(res => res.json())
         .catch(err => console.error(err));
     }
 
@@ -108,166 +108,166 @@ function fetchEventData(eventId) {
   return (
 
 
-     <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }}>
       <Header />
-    
-        <Menu/>
-        <Box  component="main"
+
+      <Menu />
+      <Box component="main"
         sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
 
 
 
 
 
-      <Typography variant="h5" sx={{  mb: 2 }}>{isNew ? "Add" : "Edit"} Event {eventData && !isNew ? ` - ${eventData.EventName}` : ''}</Typography>
+        <Typography variant="h5" sx={{ mb: 2 }}>{isNew ? "Add" : "Edit"} Event {eventData && !isNew ? ` - ${eventData.EventName}` : ''}</Typography>
 
 
         <TextInputField
-        label="Event Name"
-        value={eventData != null &&eventData.EventName}
-        onChange={val => handleChange('EventName', val)}
+          label="Event Name"
+          value={eventData != null && eventData.EventName}
+          onChange={val => handleChange('EventName', val)}
         />
 
 
         <TextAreaInputField
-        label="Event Description"
-        value={eventData != null &&eventData.EventDescription || ''}
-        onChange={val => handleChange('EventDescription', val)}
+          label="Event Description"
+          value={eventData != null && eventData.EventDescription || ''}
+          onChange={val => handleChange('EventDescription', val)}
         />
 
-       <TextAreaInputField
-        label="Terms & Conditions"
-        value={eventData != null &&eventData.TermsAndConditions || ''}
-        onChange={val => handleChange('TermsAndConditions', val)}
+        <TextAreaInputField
+          label="Terms & Conditions"
+          value={eventData != null && eventData.TermsAndConditions || ''}
+          onChange={val => handleChange('TermsAndConditions', val)}
         />
 
         {!isNew && <TextField
-        label="ShortUrl"
-        value={eventData != null && eventData.ShortUrl}
-        disabled={true}
+          label="ShortUrl"
+          value={eventData != null && eventData.ShortUrl}
+          disabled={true}
         />} {!isNew && !eventData.ShortUrl && <Button variant='contained' onClick={handleCreateShortUrl}> Create Short URL </Button>}
 
 
-    {!isNew  && eventData.ShortUrl && <img src={qrUrl} alt="QR Code" />}
+        {!isNew && eventData.ShortUrl && <img src={qrUrl} alt="QR Code" />}
 
-     <CheckBoxInputField
-        label="Event Active?"
-        value={eventData != null &&eventData.Active || false}
-        onChange={val => handleChange('Active', val)}
-     />
+        <CheckBoxInputField
+          label="Event Active?"
+          value={eventData != null && eventData.Active || false}
+          onChange={val => handleChange('Active', val)}
+        />
 
-      
-    <CheckBoxInputField
-        label="Multi Ticket Event?"
-        value={eventData != null &&eventData.MultiTicketEvent || false }
-        onChange={val => handleChange('MultiTicketEvent', val)}
-     />
 
-{eventData != null && eventData.MultiTicketEvent && (<TextInputField
-        label="Max Tickets"
-        value={(eventData != null &&eventData.MaxTickets || '')}
-        onChange={val => handleChange('MaxTickets', val)}
-         type="number"
+        <CheckBoxInputField
+          label="Multi Ticket Event?"
+          value={eventData != null && eventData.MultiTicketEvent || false}
+          onChange={val => handleChange('MultiTicketEvent', val)}
+        />
+
+        {eventData != null && eventData.MultiTicketEvent && (<TextInputField
+          label="Max Tickets"
+          value={(eventData != null && eventData.MaxTickets || '')}
+          onChange={val => handleChange('MaxTickets', val)}
+          type="number"
         />)}
-     
 
 
-      <TextInputField
-        label="Event Donation (£)"
-        value={(eventData != null &&eventData.EventDonation || '').replace('£', '')}
-        onChange={val => handleChange('EventDonation', `£${val}`)}
-         type="number"
+
+        <TextInputField
+          label="Event Donation (£)"
+          value={(eventData != null && eventData.EventDonation || '').replace('£', '')}
+          onChange={val => handleChange('EventDonation', `£${val}`)}
+          type="number"
         />
 
 
         <TextInputField
-        label="Event Date & Time"
-        value={dayjs(eventData != null &&eventData.EventDateTime).format('YYYY-MM-DDTHH:mm')}
-        onChange={val => handleChange('EventDateTime', val)}
-         type="datetime-local"
+          label="Event Date & Time"
+          value={dayjs(eventData != null && eventData.EventDateTime).format('YYYY-MM-DDTHH:mm')}
+          onChange={val => handleChange('EventDateTime', val)}
+          type="datetime-local"
         />
 
 
-<CheckBoxInputField
-        label="Hide Allergy Question?"
-        value={eventData != null &&eventData.HideAllergyQuestion || false}
-        onChange={val => handleChange('HideAllergyQuestion', val)}
-     />
-
-
-
-<CheckBoxInputField
-        label="Hide No Donation?"
-        value={eventData != null &&eventData.HideNoDonation || false}
-        onChange={val => handleChange('HideNoDonation', val)}
-     />
-
-
-<TextInputField
-        label="Call to Action Text"
-        value={(eventData != null &&eventData.CTAText || 'Register')}
-        onChange={val => handleChange('CTAText', val)}
-        
+        <CheckBoxInputField
+          label="Hide Allergy Question?"
+          value={eventData != null && eventData.HideAllergyQuestion || false}
+          onChange={val => handleChange('HideAllergyQuestion', val)}
         />
 
 
 
+        <CheckBoxInputField
+          label="Hide No Donation?"
+          value={eventData != null && eventData.HideNoDonation || false}
+          onChange={val => handleChange('HideNoDonation', val)}
+        />
 
 
-      
+        <TextInputField
+          label="Call to Action Text"
+          value={(eventData != null && eventData.CTAText || 'Register')}
+          onChange={val => handleChange('CTAText', val)}
 
-      <Typography variant="h6" style={{ marginTop: 20 }}>Event Questions</Typography>
+        />
 
-      {Array.from({ length: 10 }).map((_, i) => {
-        const index = i + 1;
-        return (
-          <Grid container spacing={2} key={index} style={{ marginTop: 10, marginBottom:20 }}>
-            <Grid item xs={12} md={3}>
-              <TextField
-                label={`Question ${index} Name`}
-                value={eventData != null &&eventData[`EventQuestion${index}Name`] || ''}
-                onChange={e => handleQuestionChange(index, 'Name', e.target.value)}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <TextField
-                label="Id"
-                value={eventData != null &&eventData[`EventQuestion${index}Id`] || ''}
-                onChange={e => handleQuestionChange(index, 'Id', e.target.value)}
-                fullWidth
-                
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <TextField
-                select
-                label="Type"
-                value={eventData != null && eventData[`EventQuestion${index}Type`] || ''}
-                onChange={e => handleQuestionChange(index, 'Type', e.target.value)}
-                fullWidth
-              >
-                <MenuItem value="Text">Text</MenuItem>
-                <MenuItem value="Options">Options</MenuItem>
-              </TextField>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              {eventData != null && eventData[`EventQuestion${index}Type`] === 'Options' && (
+
+
+
+
+
+
+        <Typography variant="h6" style={{ marginTop: 20 }}>Event Questions</Typography>
+
+        {Array.from({ length: 10 }).map((_, i) => {
+          const index = i + 1;
+          return (
+            <Grid container spacing={2} key={index} style={{ marginTop: 10, marginBottom: 20 }}>
+              <Grid item xs={12} md={3}>
                 <TextField
-                  label="Options (| delimited)"
-                  value={eventData != null ? eventData[`EventQuestion${index}Options`] || '':""}
-                  onChange={e => handleQuestionChange(index, 'Options', e.target.value)}
+                  label={`Question ${index} Name`}
+                  value={eventData != null && eventData[`EventQuestion${index}Name`] || ''}
+                  onChange={e => handleQuestionChange(index, 'Name', e.target.value)}
                   fullWidth
                 />
-              )}
-            </Grid>
-          </Grid>
-        );
-      })}
-      <Button variant="contained" sx={{marginRight:1}} onClick={handleSave}>Save</Button>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField
+                  label="Id"
+                  value={eventData != null && eventData[`EventQuestion${index}Id`] || ''}
+                  onChange={e => handleQuestionChange(index, 'Id', e.target.value)}
+                  fullWidth
 
-      <Button variant="outlined" onClick={handleBack}>Back</Button>
-    </Box>
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField
+                  select
+                  label="Type"
+                  value={eventData != null && eventData[`EventQuestion${index}Type`] || ''}
+                  onChange={e => handleQuestionChange(index, 'Type', e.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value="Text">Text</MenuItem>
+                  <MenuItem value="Options">Options</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                {eventData != null && eventData[`EventQuestion${index}Type`] === 'Options' && (
+                  <TextField
+                    label="Options (| delimited)"
+                    value={eventData != null ? eventData[`EventQuestion${index}Options`] || '' : ""}
+                    onChange={e => handleQuestionChange(index, 'Options', e.target.value)}
+                    fullWidth
+                  />
+                )}
+              </Grid>
+            </Grid>
+          );
+        })}
+        <Button variant="contained" sx={{ marginRight: 1 }} onClick={handleSave}>Save</Button>
+
+        <Button variant="outlined" onClick={handleBack}>Back</Button>
+      </Box>
     </Box>
   );
 }

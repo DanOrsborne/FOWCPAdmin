@@ -1,49 +1,48 @@
-.mb-10{
-    margin-bottom: 10px;
+.mb-10 {
+  margin-bottom: 10px;
 }
 
-.mb-15{
-    margin-bottom: 15px;
+.mb-15 {
+  margin-bottom: 15px;
 }
 
-.mb-20{
-    margin-bottom: 20px;
+.mb-20 {
+  margin-bottom: 20px;
 }
 
 
 
-.MuiDrawer-root ul li div.Mui-selected, .MuiDrawer-root ul li div.Mui-selected:hover, button.MuiButtonBase-root, header.MuiPaper-root
-{
-    background-color:#48a89e !important;
-    color: #fff;
+.MuiDrawer-root ul li div.Mui-selected,
+.MuiDrawer-root ul li div.Mui-selected:hover,
+button.MuiButtonBase-root,
+header.MuiPaper-root {
+  background-color: #48a89e !important;
+  color: #fff;
 }
 
-.MuiDrawer-root ul li .MuiListItemButton-root:hover
-{
-color:#000;
-background-color:#cccccc;
+.MuiDrawer-root ul li .MuiListItemButton-root:hover {
+  color: #000;
+  background-color: #cccccc;
 
 }
 
-.MuiList-root
-{
-    padding-top: 0 !important;
+.MuiList-root {
+  padding-top: 0 !important;
 }
 
-main.MuiBox-root{
-    padding:0 !important;
-     padding-top: 10px !important;
-      padding-left: 10px !important;
-      margin-top: 64px;
+main.MuiBox-root {
+  padding: 0 !important;
+  padding-top: 10px !important;
+  padding-left: 10px !important;
+  margin-top: 64px;
 }
 
-main.noMT
-{
-    margin-top: 0px !important;
+main.noMT {
+  margin-top: 0px !important;
 }
 
-div.MuiPaper-root{
-    overflow: hidden;
+div.MuiPaper-root {
+  overflow: hidden;
 }
 
 
@@ -57,11 +56,13 @@ div.MuiPaper-root{
   }
 
   .only-print {
-    display: table-cell !important; /* or inline, inline-block, flex, etc., depending on element */
+    display: table-cell !important;
+    /* or inline, inline-block, flex, etc., depending on element */
   }
 
 
-  table.MuiTable-root td{ /*Compress table on print*/
+  table.MuiTable-root td {
+    /*Compress table on print*/
     font-size: 12px;
     line-height: 13px;
     padding: 5px;

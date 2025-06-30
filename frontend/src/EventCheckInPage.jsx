@@ -10,7 +10,7 @@ import GDPRNotice from './Controls/GDPRHeader';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import { TextField } from '@mui/material'; // ADD THIS to your imports
-
+import { apiFetch } from './Controls/apiFetch';
 
 const EventCheckInPage = () => {
   const { eventId } = useParams();
@@ -31,14 +31,14 @@ const EventCheckInPage = () => {
 
     const fetchEvent = async () => {
       try {
-        const res = await fetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' });
+        const res = await apiFetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' });
         const data = await res.json();
         setEvent(data);
       } catch (err) {
         console.error(err);
       }
     };
-    
+
     fetchRegistrations(eventId);
 
 
@@ -47,49 +47,48 @@ const EventCheckInPage = () => {
 
 
 
-const fetchRegistrations = async (eventId) => {
-  try {
-    const res = await fetch(`${apiUrl}/events/${eventId}/registrations`, { credentials: 'include' });
-    const data = await res.json();
-    setRegistrations(data);
-  } catch (err) {
-    console.error(err);
-  }
-};
+  const fetchRegistrations = async (eventId) => {
+    try {
+      const res = await apiFetch(`${apiUrl}/events/${eventId}/registrations`, { credentials: 'include' });
+      const data = await res.json();
+      setRegistrations(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
- 
-const handleCheckInOut = async (registrationId, action, value, warn, isCheckedIn) => {
 
-  let actionName = "";
-  if (action === "checkedIn" ) {
-    actionName = "Check In";
+  const handleCheckInOut = async (registrationId, action, value, warn, isCheckedIn) => {
 
-  }
-  else if (action === "checkedOut") {
-    actionName = "Check Out";
-    if(!isCheckedIn && value) 
-      {
+    let actionName = "";
+    if (action === "checkedIn") {
+      actionName = "Check In";
+
+    }
+    else if (action === "checkedOut") {
+      actionName = "Check Out";
+      if (!isCheckedIn && value) {
         window.alert("You cannot check out a person who is not checked in");
-    return;
+        return;
       }
-  }
+    }
 
-  if(warn) {
-    if (!window.confirm(`Are you sure you want to remove this persons ${actionName}?`)) return;
+    if (warn) {
+      if (!window.confirm(`Are you sure you want to remove this persons ${actionName}?`)) return;
 
-  }
+    }
 
     let jsonData = `{"${action}" : ${value}}`;
 
-    await fetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
+    await apiFetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: jsonData
     })
-      .then(res => res.json()) 
+      .then(res => res.json())
       .catch(err => console.error(err));
-    
+
 
     await fetchRegistrations(eventId);
   };
@@ -98,57 +97,57 @@ const handleCheckInOut = async (registrationId, action, value, warn, isCheckedIn
     setChildFilter("");
     setParentFilter("");
   }
-  
 
 
-  
-const filteredRegistrations = registrations.filter((reg) => {
-  const parentMatch = reg.ParentName?.toLowerCase().includes(parentFilter.toLowerCase());
-  const childMatch = reg.EventQuestion1Answer?.toLowerCase().includes(childFilter.toLowerCase());
-  return parentMatch && childMatch;
-});
+
+
+  const filteredRegistrations = registrations.filter((reg) => {
+    const parentMatch = reg.ParentName?.toLowerCase().includes(parentFilter.toLowerCase());
+    const childMatch = reg.EventQuestion1Answer?.toLowerCase().includes(childFilter.toLowerCase());
+    return parentMatch && childMatch;
+  });
 
 
   if (loading) return <CircularProgress sx={{ m: 4 }} />;
 
   return (
-    <Box sx={{ display: 'flex'}}>
+    <Box sx={{ display: 'flex' }}>
 
-      <Box className='noMT' component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6}}>
+      <Box className='noMT' component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
 
-      <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => navigate(-1)}>Back</Button>
+        <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => navigate(-1)}>Back</Button>
 
-      <GDPRNotice/>
+        <GDPRNotice />
 
-         <Typography variant="h5" sx={{ mb: 2 }}>Check In {event ? ` - ${event.EventName}` : ''}</Typography>
+        <Typography variant="h5" sx={{ mb: 2 }}>Check In {event ? ` - ${event.EventName}` : ''}</Typography>
 
 
 
-<Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-  <TextField
-    label="Filter by Parent Name"
-    variant="outlined"
-    size="small"
-    value={parentFilter}
-    onChange={(e) => setParentFilter(e.target.value)}
-  />
-  <TextField
-    label="Filter by Child Name"
-    variant="outlined"
-    size="small"
-    value={childFilter}
-    onChange={(e) => setChildFilter(e.target.value)}
-  />
+        <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+          <TextField
+            label="Filter by Parent Name"
+            variant="outlined"
+            size="small"
+            value={parentFilter}
+            onChange={(e) => setParentFilter(e.target.value)}
+          />
+          <TextField
+            label="Filter by Child Name"
+            variant="outlined"
+            size="small"
+            value={childFilter}
+            onChange={(e) => setChildFilter(e.target.value)}
+          />
 
-  <Button disabled={!parentFilter && !childFilter} variant="contained" sx={{ mt: 0 }} onClick={() => clearFilters()}>Clear</Button>
-</Box>
+          <Button disabled={!parentFilter && !childFilter} variant="contained" sx={{ mt: 0 }} onClick={() => clearFilters()}>Clear</Button>
+        </Box>
 
         <Table >
           <TableHead>
             <TableRow>
-              <TableCell sx={{minWidth:50}} >Check In/Out</TableCell>
+              <TableCell sx={{ minWidth: 50 }} >Check In/Out</TableCell>
               <TableCell>Parent Details</TableCell>
-            
+
               <TableCell>{event.EventQuestion1Name}</TableCell>
               <TableCell>{event.EventQuestion2Name}</TableCell>
               <TableCell>{event.EventQuestion3Name}</TableCell>
@@ -159,21 +158,21 @@ const filteredRegistrations = registrations.filter((reg) => {
               <TableCell>{event.EventQuestion8Name}</TableCell>
               <TableCell>{event.EventQuestion9Name}</TableCell>
               <TableCell>{event.EventQuestion10Name}</TableCell>
-              
+
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredRegistrations.sort((a, b) => a.EventQuestion1Answer.localeCompare(b.EventQuestion1Answer)).map((reg) => (
               <TableRow key={reg.id}>
-                <TableCell ><>{reg.checkedIn ? <CheckBoxIcon sx={{color:'green'}}  onClick={() => handleCheckInOut(reg.CustomerId, "checkedIn", false, true)} />
-                : <CheckBoxOutlineBlankIcon onClick={() => handleCheckInOut(reg.CustomerId, "checkedIn", true, false)} />}
-                  {reg.checkedOut ? <DisabledByDefaultIcon sx={{color:'red'}}  onClick={() => handleCheckInOut(reg.CustomerId, "checkedOut", false, true)} />
-                : <CheckBoxOutlineBlankIcon onClick={() => handleCheckInOut(reg.CustomerId, "checkedOut", true, false, reg.checkedIn )} />}</>
-                  </TableCell>
-                <TableCell>{reg.ParentName}<br/>
-                {reg.ParentEmail}<br/>
-                {reg.ParentMobile}</TableCell>
-              
+                <TableCell ><>{reg.checkedIn ? <CheckBoxIcon sx={{ color: 'green' }} onClick={() => handleCheckInOut(reg.CustomerId, "checkedIn", false, true)} />
+                  : <CheckBoxOutlineBlankIcon onClick={() => handleCheckInOut(reg.CustomerId, "checkedIn", true, false)} />}
+                  {reg.checkedOut ? <DisabledByDefaultIcon sx={{ color: 'red' }} onClick={() => handleCheckInOut(reg.CustomerId, "checkedOut", false, true)} />
+                    : <CheckBoxOutlineBlankIcon onClick={() => handleCheckInOut(reg.CustomerId, "checkedOut", true, false, reg.checkedIn)} />}</>
+                </TableCell>
+                <TableCell>{reg.ParentName}<br />
+                  {reg.ParentEmail}<br />
+                  {reg.ParentMobile}</TableCell>
+
                 <TableCell>{event.EventQuestion1Id == reg.EventQuestion1Name ? reg.EventQuestion1Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion2Id == reg.EventQuestion2Name ? reg.EventQuestion2Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion3Id == reg.EventQuestion3Name ? reg.EventQuestion3Answer : ""}</TableCell>
@@ -184,7 +183,7 @@ const filteredRegistrations = registrations.filter((reg) => {
                 <TableCell>{event.EventQuestion8Id == reg.EventQuestion8Name ? reg.EventQuestion8Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion9Id == reg.EventQuestion9Name ? reg.EventQuestion9Answer : ""}</TableCell>
                 <TableCell>{event.EventQuestion10Id == reg.EventQuestion10Name ? reg.EventQuestion10Answer : ""}</TableCell>
-                
+
               </TableRow>
             ))}
           </TableBody>

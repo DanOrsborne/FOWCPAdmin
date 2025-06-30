@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
-const {eventsContainer, registrationsContainer } = require('../cosmos');
+const { eventsContainer, registrationsContainer } = require('../cosmos');
 const { v4: uuidv4 } = require('uuid');
 const qr = require("qr-image");
 const authMiddleware = require('../utils/authMiddleware');
@@ -9,11 +9,11 @@ const { createShortUrl } = require('../utils/urlUtils');
 const router = express.Router();
 const axios = require('axios');
 
-const SUMUP_API_KEY =  process.env.SUMUP_API_KEY
+const SUMUP_API_KEY = process.env.SUMUP_API_KEY
 
 
 router.get('/events', authMiddleware, async (req, res) => {
-  
+
 
   try {
     const activeOnly = req.query.active === 'true';
@@ -35,8 +35,8 @@ router.get('/events', authMiddleware, async (req, res) => {
 
 router.delete('/events/:eventId', authMiddleware, async (req, res) => {
 
- 
-  
+
+
 
   const eventId = req.params.eventId;
 
@@ -69,9 +69,9 @@ router.delete('/events/:eventId', authMiddleware, async (req, res) => {
     const { resources: registrations } = await registrationsContainer.items.query(regQuery).fetchAll();
 
     for (const reg of registrations) {
-    
+
       await registrationsContainer.item(reg.id, reg.CustomerId).delete();
-      
+
     }
 
     res.json({ message: 'Event and associated registrations deleted' });
@@ -84,7 +84,7 @@ router.delete('/events/:eventId', authMiddleware, async (req, res) => {
 
 
 router.patch('/events/:eventId/createshorturl', authMiddleware, async (req, res) => {
-  
+
 
   const eventId = req.params.eventId;
 
@@ -122,7 +122,7 @@ router.patch('/events/:eventId/createshorturl', authMiddleware, async (req, res)
 
 
 router.get('/events/:eventId/qr', authMiddleware, async (req, res) => {
-  
+
 
   const eventId = req.params.eventId;
 
@@ -142,10 +142,10 @@ router.get('/events/:eventId/qr', authMiddleware, async (req, res) => {
 
 
 
-  const qrText = event.ShortUrl;
-  const qrPng = qr.image(qrText, { type: 'png' });
-  res.type('png');
-  qrPng.pipe(res);
+    const qrText = event.ShortUrl;
+    const qrPng = qr.image(qrText, { type: 'png' });
+    res.type('png');
+    qrPng.pipe(res);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to update event URL' });
@@ -153,14 +153,14 @@ router.get('/events/:eventId/qr', authMiddleware, async (req, res) => {
 });
 
 router.post('/events', authMiddleware, async (req, res) => {
-  
+
 
   const newEvent = req.body;
   const newId = uuidv4();
   const newEventId = uuidv4();
 
-    // Call Bitly API to shorten it
-    const bitlyRes = await createShortUrl(newEventId);
+  // Call Bitly API to shorten it
+  const bitlyRes = await createShortUrl(newEventId);
 
 
   const eventToInsert = {
@@ -168,7 +168,7 @@ router.post('/events', authMiddleware, async (req, res) => {
     EventId: newEventId,  // If you want both id and EventId set to same GUID
     ShortUrl: bitlyRes.data.link,
     ...newEvent
-  };    
+  };
 
 
   try {
@@ -183,10 +183,10 @@ router.post('/events', authMiddleware, async (req, res) => {
 
 
 router.get('/events/:eventId', authMiddleware, async (req, res) => {
-  
+
 
   const eventId = req.params.eventId;
-  
+
 
   try {
     const querySpec = {
@@ -205,7 +205,7 @@ router.get('/events/:eventId', authMiddleware, async (req, res) => {
 });
 
 router.put('/events/:eventId', authMiddleware, async (req, res) => {
-  
+
 
   const eventId = req.params.eventId;
   const updatedData = req.body;
@@ -224,7 +224,7 @@ router.put('/events/:eventId', authMiddleware, async (req, res) => {
 
 
 router.get('/events/:eventId/registrations', authMiddleware, async (req, res) => {
-  
+
 
   const eventId = req.params.eventId;
 
@@ -248,14 +248,14 @@ router.get('/events/:eventId/registrations', authMiddleware, async (req, res) =>
 
 
 router.get('/events/:eventId/registrations/:registrationId', authMiddleware, async (req, res) => {
-  
+
 
   try {
     const registrationId = req.params.registrationId;
     const querySpec = {
-        query: 'SELECT * FROM c WHERE c.CustomerId = @registrationId',
-        parameters: [{ name: '@registrationId', value: registrationId }]
-      };
+      query: 'SELECT * FROM c WHERE c.CustomerId = @registrationId',
+      parameters: [{ name: '@registrationId', value: registrationId }]
+    };
 
     const { resources } = await registrationsContainer.items.query(querySpec).fetchAll();
     if (resources.length === 0) return res.status(404).json({ message: 'Registration not found' });
@@ -269,11 +269,11 @@ router.get('/events/:eventId/registrations/:registrationId', authMiddleware, asy
 
 
 router.delete('/events/:eventId/registrations/:registrationId', authMiddleware, async (req, res) => {
-  
+
 
   const registrationId = req.params.registrationId;
   const eventId = req.params.eventId;
-  
+
   try {
     // Find the event by EventID
     const querySpec = {
@@ -290,7 +290,7 @@ router.delete('/events/:eventId/registrations/:registrationId', authMiddleware, 
     const registration = resources[0];
 
 
-    if(registration.eventId == eventId){
+    if (registration.eventId == eventId) {
       // Delete the registration by id and partition key
       await registrationsContainer.item(registration.id, registration.CustomerId).delete();
       res.json({ message: 'Registration deleted' });
@@ -299,8 +299,8 @@ router.delete('/events/:eventId/registrations/:registrationId', authMiddleware, 
       return res.status(400).json({ message: 'Registration does not belong to this event' });
     }
 
-  
-    
+
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to delete registration' });
@@ -309,21 +309,21 @@ router.delete('/events/:eventId/registrations/:registrationId', authMiddleware, 
 
 // Update a single registration by ID
 router.put('/events/:eventId/registrations/:registrationId', authMiddleware, async (req, res) => {
-  
 
-   const registrationId = req.params.registrationId;
+
+  const registrationId = req.params.registrationId;
   const updatedData = req.body;
 
   try {
-      const querySpec = {
-        query: 'SELECT * FROM c WHERE c.CustomerId = @registrationId',
-        parameters: [{ name: '@registrationId', value: registrationId }]
-      };
+    const querySpec = {
+      query: 'SELECT * FROM c WHERE c.CustomerId = @registrationId',
+      parameters: [{ name: '@registrationId', value: registrationId }]
+    };
 
     const { resources } = await registrationsContainer.items.query(querySpec).fetchAll();
     if (resources.length === 0) return res.status(404).json({ message: 'Registration not found' });
 
-let existing = resources[0];
+    let existing = resources[0];
 
     const updatedItem = { ...existing, ...updatedData };
 
@@ -341,7 +341,7 @@ let existing = resources[0];
 
 
 router.get('/events/:eventId/summary', authMiddleware, async (req, res) => {
-  
+
 
   const eventId = req.params.eventId;
 
@@ -396,7 +396,7 @@ router.get('/events/:eventId/summary', authMiddleware, async (req, res) => {
 
 
 router.get('/registrations/:registrationId/sumup', authMiddleware, async (req, res) => {
-  
+
 
   const registrationId = req.params.registrationId;
 
@@ -430,7 +430,7 @@ router.get('/registrations/:registrationId/sumup', authMiddleware, async (req, r
       }
     );
 
-    
+
     // The C# code expected a list, returning the first item
     const sumupData = Array.isArray(sumupResponse.data) ? sumupResponse.data[0] : sumupResponse.data;
 

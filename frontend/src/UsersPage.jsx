@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
+import { apiFetch } from './Controls/apiFetch';
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -17,7 +18,7 @@ export default function UsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${apiUrl}/users`, { credentials: 'include' });
+      const res = await apiFetch(`${apiUrl}/users`, { credentials: 'include' });
       const data = await res.json();
       setUsers(data);
     } catch (err) {
@@ -47,42 +48,42 @@ export default function UsersPage() {
   };
 
   const handleSubmit = async () => {
-  const emailExists = users.some(u =>
-    u.Email.toLowerCase() === form.Email.toLowerCase() &&
-    (!editingUser || u.id !== editingUser.id)
-  );
+    const emailExists = users.some(u =>
+      u.Email.toLowerCase() === form.Email.toLowerCase() &&
+      (!editingUser || u.id !== editingUser.id)
+    );
 
-  if (emailExists) {
-    alert("A user with this email already exists.");
-    return;
-  }
+    if (emailExists) {
+      alert("A user with this email already exists.");
+      return;
+    }
 
-  try {
-    const method = editingUser ? 'PUT' : 'POST';
-    const url = editingUser ? `${apiUrl}/users/${editingUser.id}` : `${apiUrl}/users`;
+    try {
+      const method = editingUser ? 'PUT' : 'POST';
+      const url = editingUser ? `${apiUrl}/users/${editingUser.id}` : `${apiUrl}/users`;
 
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(form)
-    });
+      const res = await apiFetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(form)
+      });
 
-    if (!res.ok) throw new Error('Request failed');
+      if (!res.ok) throw new Error('Request failed');
 
-    fetchUsers();
-    handleClose();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to save user");
-  }
-};
+      fetchUsers();
+      handleClose();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save user");
+    }
+  };
 
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      const res = await fetch(`${apiUrl}/users/${id}`, {
+      const res = await apiFetch(`${apiUrl}/users/${id}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -95,80 +96,80 @@ export default function UsersPage() {
   };
 
   return (
- 
-     <Box sx={{ display: 'flex' }}>
+
+    <Box sx={{ display: 'flex' }}>
       <Header />
-    
-        <Menu/>
-        <Box  component="main"
+
+      <Menu />
+      <Box component="main"
         sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
-          
-         
-      <Typography variant="h5" sx={{  mb: 2 }}>Users</Typography>
+
+
+        <Typography variant="h5" sx={{ mb: 2 }}>Users</Typography>
 
 
 
-      <Button variant="contained" color="primary" onClick={() => handleOpen()}>
-        Add User
-      </Button>
+        <Button variant="contained" color="primary" onClick={() => handleOpen()}>
+          Add User
+        </Button>
 
-      <TableContainer component={Paper} style={{ marginTop: 20 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Email</TableCell>
-              <TableCell>Enabled</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((u) => (
-              <TableRow key={u.id}>
-                <TableCell>{u.Email}</TableCell>
-                <TableCell>{u.Enabled ? 'Yes' : 'No'}</TableCell>
-                <TableCell>
-                  <Button  sx={{mr:1}} onClick={() => handleOpen(u)}>Edit</Button>
-                  <Button color="error" onClick={() => handleDelete(u.id)}>Delete</Button>
-                </TableCell>
+        <TableContainer component={Paper} style={{ marginTop: 20 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Email</TableCell>
+                <TableCell>Enabled</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {users.map((u) => (
+                <TableRow key={u.id}>
+                  <TableCell>{u.Email}</TableCell>
+                  <TableCell>{u.Enabled ? 'Yes' : 'No'}</TableCell>
+                  <TableCell>
+                    <Button sx={{ mr: 1 }} onClick={() => handleOpen(u)}>Edit</Button>
+                    <Button color="error" onClick={() => handleDelete(u.id)}>Delete</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-      <Dialog open={dialogOpen} onClose={handleClose}>
-        <DialogTitle>{editingUser ? 'Edit User' : 'Add User'}</DialogTitle>
-        <DialogContent>
-          <TextField  autoComplete={false}
-            label="Email"
-            fullWidth
-            margin="dense"
-            value={form.Email}
-            onChange={(e) => setForm({ ...form, Email: e.target.value })}
-          />
-          <TextField autoComplete={false}
-            label="Password"
-            type="password"
-            fullWidth
-            margin="dense"
-            value={form.Password}
-            onChange={(e) => setForm({ ...form, Password: e.target.value })}
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={form.Enabled}
-                onChange={(e) => setForm({ ...form, Enabled: e.target.checked })}
-              />
-            }
-            label="Enabled"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained">Save</Button>
-        </DialogActions>
-      </Dialog>
-    </Box></Box>
+        <Dialog open={dialogOpen} onClose={handleClose}>
+          <DialogTitle>{editingUser ? 'Edit User' : 'Add User'}</DialogTitle>
+          <DialogContent>
+            <TextField autoComplete={false}
+              label="Email"
+              fullWidth
+              margin="dense"
+              value={form.Email}
+              onChange={(e) => setForm({ ...form, Email: e.target.value })}
+            />
+            <TextField autoComplete={false}
+              label="Password"
+              type="password"
+              fullWidth
+              margin="dense"
+              value={form.Password}
+              onChange={(e) => setForm({ ...form, Password: e.target.value })}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={form.Enabled}
+                  onChange={(e) => setForm({ ...form, Enabled: e.target.checked })}
+                />
+              }
+              label="Enabled"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleSubmit} variant="contained">Save</Button>
+          </DialogActions>
+        </Dialog>
+      </Box></Box>
   );
 }

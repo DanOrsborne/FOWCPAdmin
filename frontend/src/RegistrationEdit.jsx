@@ -6,6 +6,7 @@ import Menu from './Menu';
 import TextInputField from './Controls/TextInputField';
 import TextAreaInputField from './Controls/TextAreaInputField';
 import CheckBoxInputField from './Controls/CheckBoxInputField';
+import { apiFetch } from './Controls/apiFetch';
 
 export default function EditRegistration() {
   const { eventId, registrationId } = useParams();
@@ -13,8 +14,8 @@ export default function EditRegistration() {
   const [registrationData, setRegistrationData] = useState(null);
   const { apiUrl } = require('./Constants');
 
-  useEffect(() => {
-    fetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, { credentials: 'include' })
+  useEffect(async () => {
+    await apiFetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, { credentials: 'include' })
       .then(res => {
         if (res.status === 401) navigate('/login');
         return res.json();
@@ -38,8 +39,8 @@ export default function EditRegistration() {
     navigate(-1);
   };
 
-  const handleSave = () => {
-    fetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
+  const handleSave = async () => {
+    await apiFetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -57,7 +58,7 @@ export default function EditRegistration() {
       <Header />
       <Menu />
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
-         <Typography variant="h5" sx={{  mb: 2 }}>Edit Signup</Typography>
+        <Typography variant="h5" sx={{ mb: 2 }}>Edit Signup</Typography>
 
         <TextInputField
           label="Parent Name"

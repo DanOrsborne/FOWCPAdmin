@@ -39,7 +39,7 @@ router.post('/users', authMiddleware, async (req, res) => {
         id: uuidv4(),
         UserId: uuidv4(),
         Email,
-        Password:  crypto.createHash('md5').update(Password + process.env.PASSWORD_HASH_SALT).digest('hex'),
+        Password: crypto.createHash('md5').update(Password + process.env.PASSWORD_HASH_SALT).digest('hex'),
         Enabled: Enabled ?? true
     };
 
