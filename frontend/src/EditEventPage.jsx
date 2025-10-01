@@ -254,7 +254,7 @@ export default function EditEventPage({ isNew }) {
                   onChange={e => handleQuestionChange(index, 'Type', e.target.value)}
                   fullWidth
                 >
-                  <MenuItem value=""></MenuItem>
+                  <MenuItem value="">- Not Set -</MenuItem>
                   <MenuItem value="Text">Text</MenuItem>
                   <MenuItem value="Options">Options</MenuItem>
                 </TextField>
