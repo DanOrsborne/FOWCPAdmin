@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab } from '@mui/material';
+import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab, Select, MenuItem } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
 import CheckIcon from '@mui/icons-material/Check';
@@ -24,7 +24,7 @@ const EventCheckInPage = () => {
   // Inside your component:
   const [parentFilter, setParentFilter] = useState('');
   const [childFilter, setChildFilter] = useState('');
-
+  const [classFilter, setClassFilter] = useState('*');
 
 
   useEffect(() => {
@@ -96,6 +96,7 @@ const EventCheckInPage = () => {
   const clearFilters = () => {
     setChildFilter("");
     setParentFilter("");
+    setClassFilter("*");
   }
 
 
@@ -104,7 +105,11 @@ const EventCheckInPage = () => {
   const filteredRegistrations = registrations.filter((reg) => {
     const parentMatch = reg.ParentName?.toLowerCase().includes(parentFilter.toLowerCase());
     const childMatch = reg.EventQuestion1Answer?.toLowerCase().includes(childFilter.toLowerCase());
-    return parentMatch && childMatch;
+    const classMatch =
+      classFilter === "*" ||  // If classFilter is "*", skip filtering by class
+      reg.EventQuestion2Answer?.toLowerCase().includes(classFilter.toLowerCase());
+
+    return parentMatch && childMatch && classMatch;
   });
 
 
@@ -139,7 +144,26 @@ const EventCheckInPage = () => {
             onChange={(e) => setChildFilter(e.target.value)}
           />
 
-          <Button disabled={!parentFilter && !childFilter} variant="contained" sx={{ mt: 0 }} onClick={() => clearFilters()}>Clear</Button>
+          <Select onChange={(e) => setClassFilter(e.target.value)}
+            value={classFilter}
+            size="small"
+            label="Filter by Class"
+            variant="outlined">
+            <MenuItem value="*">All</MenuItem>
+            {[...new Set(registrations.map((reg) => reg.EventQuestion2Answer).filter(Boolean))]
+              .sort((a, b) => a.localeCompare(b))
+              .map((className, idx) => (
+                <MenuItem key={idx} value={className}>
+                  {className}
+                </MenuItem>
+              ))}
+          </Select>
+
+          <Button disabled={
+            !parentFilter &&
+            !childFilter &&
+            (!classFilter || classFilter === "*") // disable if empty or "*"
+          } variant="contained" sx={{ mt: 0 }} onClick={() => clearFilters()}>Clear</Button>
         </Box>
 
         <Table >
