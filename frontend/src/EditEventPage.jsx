@@ -156,6 +156,12 @@ export default function EditEventPage({ isNew }) {
           onChange={val => handleChange('Active', val)}
         />
 
+ <TextInputField
+          label="Event Password"
+          value={eventData != null && eventData.EventPassword}
+          onChange={val => handleChange('EventPassword', val)}
+        />
+
 
         <CheckBoxInputField
           label="Multi Ticket Event?"

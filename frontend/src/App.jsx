@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './Login';
+import HelperLogin from './HelperLogin';
 import EventsPage from './EventsPage';
 import EditEvent from './EditEventPage';
 import EventSummaryPage from './EventSummaryPage';
 import EventRegistrationsPage from './EventRegistrationsPage';
 import EventGiftAidPage from './EventGiftAidPage';
 import EventCheckInPage from './EventCheckInPage';
+import EventCheckInPageHelperLogin from './EventCheckInPageHelperLogin';
 import RegistrationEdit from './RegistrationEdit';
 import PrivateRoute from './PrivateRoute';
 import EventFailedPaymentPage from './EventFailedPaymentPage';
@@ -16,6 +18,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/helperlogin/:eventcode" element={<HelperLogin />} />
         <Route path="/" element={<PrivateRoute><EventsPage /></PrivateRoute>} />
         <Route path="/edit/:eventId" element={<PrivateRoute><EditEvent /></PrivateRoute>} />
         <Route path="/summary/:eventId" element={<PrivateRoute><EventSummaryPage /></PrivateRoute>} />
@@ -25,6 +28,8 @@ export default function App() {
         <Route path="/failedpayments/:eventId" element={<PrivateRoute><EventFailedPaymentPage /></PrivateRoute>} />
         <Route path="/add-event" element={<PrivateRoute><EditEvent isNew={true} /></PrivateRoute>} />
         <Route path="/checkin/:eventId" element={<PrivateRoute><EventCheckInPage /></PrivateRoute>} />
+        <Route path="/checkin/:eventId/helperlogin" element={<PrivateRoute><EventCheckInPageHelperLogin /></PrivateRoute>} />
+        <Route path="/checkin/" element={<PrivateRoute><EventCheckInPage /></PrivateRoute>} />
         <Route path="/users" element={<PrivateRoute><UsersPage /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>

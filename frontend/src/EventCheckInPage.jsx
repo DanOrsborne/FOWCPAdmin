@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab, Select, MenuItem } from '@mui/material';
+import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab, Select, MenuItem, ButtonGroup } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
 import CheckIcon from '@mui/icons-material/Check';
@@ -13,7 +13,7 @@ import { TextField } from '@mui/material'; // ADD THIS to your imports
 import { apiFetch } from './Controls/apiFetch';
 
 const EventCheckInPage = () => {
-  const { eventId } = useParams();
+  const { eventId: paramEventId } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [registrations, setRegistrations] = useState([]);
@@ -27,8 +27,16 @@ const EventCheckInPage = () => {
   const [classFilter, setClassFilter] = useState('*');
 
 
+  const [eventId, setEventId] = useState(() => {
+    // Initial state: from param, then fallback to sessionStorage
+    return paramEventId || sessionStorage.getItem('eventId') || null;
+  });
+
+  const fromSessionStorage = !paramEventId;
+
   useEffect(() => {
 
+    console.log("Event ID:", eventId);
     const fetchEvent = async () => {
       try {
         const res = await apiFetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' });
@@ -43,7 +51,7 @@ const EventCheckInPage = () => {
 
 
     Promise.all([fetchEvent(), fetchRegistrations(eventId)]).finally(() => setLoading(false));
-  }, [eventId]);
+  }, [eventId, navigate]);
 
 
 
@@ -99,7 +107,11 @@ const EventCheckInPage = () => {
     setClassFilter("*");
   }
 
-
+  const handleHelperLogout = async () => {
+    sessionStorage.removeItem('eventId');
+    sessionStorage.removeItem('password');
+    navigate('/login');
+  }
 
 
   const filteredRegistrations = registrations.filter((reg) => {
@@ -120,9 +132,15 @@ const EventCheckInPage = () => {
 
       <Box className='noMT' component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 6 }}>
 
-        <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => navigate(-1)}>Back</Button>
+
+        {!fromSessionStorage && <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => navigate(-1)}>Back</Button>}
+        {fromSessionStorage && <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => handleHelperLogout()}>Logout</Button>}
+        {!fromSessionStorage && <Button className='no-print' variant="contained" sx={{ml:1, mb: 3 }} onClick={() => navigate(`/checkin/${eventId}/helperlogin`)}>Share Helper Login</Button>}
+
 
         <GDPRNotice />
+
+
 
         <Typography variant="h5" sx={{ mb: 2 }}>Check In {event ? ` - ${event.EventName}` : ''}</Typography>
 
@@ -213,7 +231,7 @@ const EventCheckInPage = () => {
           </TableBody>
         </Table>
 
-        <Button className='no-print' variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>
+        {!fromSessionStorage && <Button className='no-print' variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>}
       </Box>
     </Box>
   );

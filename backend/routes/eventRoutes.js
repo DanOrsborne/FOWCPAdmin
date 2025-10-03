@@ -8,6 +8,8 @@ const authMiddleware = require('../utils/authMiddleware');
 const { createShortUrl } = require('../utils/urlUtils');
 const router = express.Router();
 const axios = require('axios');
+const { encrypt } = require('../utils/crypto');
+
 
 const SUMUP_API_KEY = process.env.SUMUP_API_KEY
 
@@ -34,10 +36,6 @@ router.get('/events', authMiddleware, async (req, res) => {
 });
 
 router.delete('/events/:eventId', authMiddleware, async (req, res) => {
-
-
-
-
   const eventId = req.params.eventId;
 
   try {
@@ -151,6 +149,38 @@ router.get('/events/:eventId/qr', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Failed to update event URL' });
   }
 });
+
+
+router.get('/events/:eventId/helperlogin', authMiddleware, async (req, res) => {
+
+
+  const eventId = req.params.eventId;
+
+
+  try {
+    const querySpec = {
+      query: 'SELECT * FROM c WHERE c.EventId = @eventId',
+      parameters: [{ name: '@eventId', value: eventId }]
+    };
+
+    const { resources } = await eventsContainer.items.query(querySpec).fetchAll();
+    if (resources.length === 0) return res.status(404).json({ message: 'Event not found' });
+
+    const event = resources[0];
+
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+
+    const securityCode = await encrypt(event.EventId + '$' + event.EventPassword);
+    const qrPng = qr.image(`https://fowcpevents-e7cydpgwakhwbvfd.uksouth-01.azurewebsites.net/helperlogin/${securityCode}`, { type: 'png' });
+    res.type('png');
+    qrPng.pipe(res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to update event URL' });
+  }
+});
+
 
 router.post('/events', authMiddleware, async (req, res) => {
 
