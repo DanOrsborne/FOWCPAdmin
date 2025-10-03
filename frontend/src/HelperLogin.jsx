@@ -20,10 +20,8 @@ export default function HelperLogin() {
 
     const data = await res.json();  // 👈 parse the JSON
 
-    console.log("Result:", data);
-
     if (data != undefined && data.success) {
-      alert('Login successful');
+      
       sessionStorage.setItem('eventId', data.eventId);
       sessionStorage.setItem('password', password);
       navigate('/checkin');

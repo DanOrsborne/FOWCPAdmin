@@ -18,7 +18,12 @@ export default function Login() {
       body: JSON.stringify({ username, password })
     });
 
-    if (res.ok) {
+    const data = await res.json();  // 👈 parse the JSON
+
+    console.log("Result:", data);
+
+
+    if (data.success == true) {
       sessionStorage.setItem('username', username);
       navigate('/');
     }

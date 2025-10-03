@@ -26,15 +26,43 @@ router.post('/login', async (req, res) => {
         return res.json({ success: true });
       }
     }
-    res.status(401).json({ success: false, message: 'Invalid credentials' });
+    res.status(200).json({ success: false, message: 'Invalid credentials' });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Login failed' });
   }
 });
 
-router.get('/checkAuth', (req, res) => {
-  res.json({ authenticated: !!req.session.user });
+router.get('/checkAuth', async (req, res) => {
+
+  console.log("Session user:", req.session.user);
+  if (req.session.user == null) {
+    return res.json({ authenticated: false });
+  }
+
+  const username = req.session.user.username;
+
+  const querySpec = {
+    query: 'SELECT * FROM c WHERE c.Email = @username',
+    parameters: [{ name: '@username', value: username}]
+  };
+
+  const { resources } = await usersContainer.items.query(querySpec).fetchAll();
+  console.log("User resources:", querySpec);
+  if (resources.length > 0) {
+    const user = resources[0];
+    console.log("User:", user);
+    if (user.Enabled) {
+      res.json({ authenticated: true });
+    }
+    else {
+      res.json({ authenticated: false });
+    }
+  }
+
+
+
+
 });
 
 router.post('/logout', (req, res) => {
@@ -51,7 +79,7 @@ router.post('/helperlogin', async (req, res) => {
     const eventPassword = parts[1]; // "animal34" Password
 
     if (eventPassword !== password) {
-      
+
       return res.status(200).json({ success: false, message: 'Invalid credentials' });
     }
 
@@ -73,7 +101,7 @@ router.post('/helperlogin', async (req, res) => {
       }
     }
 
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    return res.status(200).json({ success: false, message: 'Invalid credentials' });
 
   } catch (err) {
     console.error(err);
