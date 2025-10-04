@@ -11,6 +11,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import { TextField } from '@mui/material'; // ADD THIS to your imports
 import { apiFetch } from './Controls/apiFetch';
+import CheckInOutToggle from './Controls/CheckInOutToggle';
 
 const EventCheckInPage = () => {
   const { eventId: paramEventId } = useParams();
@@ -19,14 +20,10 @@ const EventCheckInPage = () => {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const { apiUrl } = require('./Constants');
-
-
-  // Inside your component:
   const [parentFilter, setParentFilter] = useState('');
   const [childFilter, setChildFilter] = useState('');
-
   const [classFilter, setClassFilter] = useState(['All']);
-
+  const [loadingId, setLoadingId] = useState(null);
 
   const [eventId, setEventId] = useState(() => {
     // Initial state: from param, then fallback to sessionStorage
@@ -57,7 +54,7 @@ const EventCheckInPage = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchRegistrations(eventId);
-    }, 10000); // every 10 seconds
+    }, 5000); // every 10 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [eventId]);
@@ -94,20 +91,30 @@ const EventCheckInPage = () => {
 
     }
 
+    setLoadingId(registrationId); // 🔄 Set spinner
+
     let jsonData = `{"${action}" : ${value}}`;
 
-    await apiFetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: jsonData
-    })
-      .then(res => res.json())
-      .catch(err => console.error(err));
+    try {
+      await apiFetch(`${apiUrl}/events/${eventId}/registrations/${registrationId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: jsonData
+      })
+        .then(res => res.json())
+        .catch(err => console.error(err));
 
 
-    await fetchRegistrations(eventId);
-  };
+      await fetchRegistrations(eventId);
+    }
+    catch (err) {
+      console.error(err);
+    }
+    finally {
+      setLoadingId(null); // ✅ Clear spinner
+    };
+  }
 
   const clearFilters = () => {
     setChildFilter("");
@@ -177,7 +184,7 @@ const EventCheckInPage = () => {
               value={classFilter}
               onChange={(e) => {
                 const value = e.target.value;
-                
+
                 // If "All" was just selected
                 if (value.includes("All") && !classFilter.includes("All")) {
                   setClassFilter(["All"]);
@@ -238,10 +245,15 @@ const EventCheckInPage = () => {
             <TableBody>
               {filteredRegistrations.sort((a, b) => a.EventQuestion1Answer.localeCompare(b.EventQuestion1Answer)).map((reg) => (
                 <TableRow key={reg.id}>
-                  <TableCell ><>{reg.checkedIn ? <CheckBoxIcon sx={{ color: 'green' }} onClick={() => handleCheckInOut(reg.CustomerId, "checkedIn", false, true)} />
-                    : <CheckBoxOutlineBlankIcon onClick={() => handleCheckInOut(reg.CustomerId, "checkedIn", true, false)} />}
-                    {reg.checkedOut ? <DisabledByDefaultIcon sx={{ color: 'red' }} onClick={() => handleCheckInOut(reg.CustomerId, "checkedOut", false, true)} />
-                      : <CheckBoxOutlineBlankIcon onClick={() => handleCheckInOut(reg.CustomerId, "checkedOut", true, false, reg.checkedIn)} />}</>
+                  <TableCell >
+
+
+                    <CheckInOutToggle
+                      reg={reg}
+                      loadingId={loadingId}
+                      handleCheckInOut={handleCheckInOut}
+                    />
+
                   </TableCell>
                   <TableCell>{reg.ParentName}<br />
                     {reg.ParentEmail}<br />
