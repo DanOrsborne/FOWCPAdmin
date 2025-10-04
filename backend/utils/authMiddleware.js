@@ -12,7 +12,7 @@ module.exports = async function (req, res, next) {
 
   if (sessionUserName.startsWith('Helper$')) {
     //Validate Helper Login Session
-    const parts = user.split('$');
+    const parts = sessionUserName.split('$');
 
     if (parts.length !== 3) {
       return res.status(401).json({ message: 'Invalid helper session format' });
