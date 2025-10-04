@@ -36,7 +36,7 @@ const EventCheckInPage = () => {
 
   useEffect(() => {
 
-    console.log("Event ID:", eventId);
+    //console.log("Event ID:", eventId);
     const fetchEvent = async () => {
       try {
         const res = await apiFetch(`${apiUrl}/events/${eventId}`, { credentials: 'include' });
@@ -144,8 +144,8 @@ const EventCheckInPage = () => {
 
         <Typography variant="h5" sx={{ mb: 2 }}>Check In {event ? ` - ${event.EventName}` : ''}</Typography>
 
-
-
+ {!event.Active && (<Typography variant="h5" sx={{ mb: 2 }}>No available for inactive events</Typography>)}
+{event.Active && (<>
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
           <TextField
             label="Filter by Parent Name"
@@ -229,7 +229,8 @@ const EventCheckInPage = () => {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+        </Table></>
+)}
 
         {!fromSessionStorage && <Button className='no-print' variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>}
       </Box>

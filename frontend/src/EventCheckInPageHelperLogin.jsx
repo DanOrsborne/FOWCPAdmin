@@ -62,17 +62,21 @@ const EventCheckInPageHelperLogin = () => {
         <Button className='no-print' variant="contained" sx={{ mb: 3 }} onClick={() => navigate(-1)}>Back</Button>
         <GDPRNotice />
 
-    
+
 
         <Typography variant="h5" sx={{ mb: 2 }}>Helper Login {event ? ` - ${event.EventName}` : ''}</Typography>
 
-<Box alignContent={"center"}>
-        <img src={qrUrl} alt="QR Code" />
+        {event.Active && (
 
-        <Typography variant="h3" sx={{ mb: 2 }}>Password: {`${event.EventPassword}`}</Typography>
-        </Box>
+          <Box alignContent={"center"}>
+            <img src={qrUrl} alt="QR Code" />
+
+            <Typography variant="h3" sx={{ mb: 2 }}>Password: {`${event.EventPassword}`}</Typography>
+          </Box>
+        )}
 
 
+        {!event.Active && (<Typography variant="h5" sx={{ mb: 2 }}>No available for inactive events</Typography>)}
         <Button className='no-print' variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>
       </Box>
     </Box>

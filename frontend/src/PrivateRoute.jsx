@@ -26,26 +26,36 @@ export default function PrivateRoute({ children }) {
             const password = sessionStorage.getItem('password'); //Event Helper Login
 
             const eventData = await fetchEventData(eventId);
-            
+
             if (eventData == null || eventData.EventPassword !== password) {
               console.log("Event Password mismatch");
               sessionStorage.removeItem('eventId');
               sessionStorage.removeItem('password');
               setAuth(false);
-              navigate('/login'); 
+              navigate('/login');
             }
           }
         }
         else {
 
+         
+          console.log("Pathname:", location.pathname);
           if (location.pathname === '/checkin/') { //this page is only for event helpers
             navigate('/');
           }
 
-          const res = await apiFetch(`${apiUrl}/checkAuth`);
-          const data = await res.json();
+          if (location.pathname === '/login') {
+            setAuth(true);
+          }
+          else {
+            console.log("Checking auth for normal user");
+             console.log("User: " + sessionStorage.getItem('username'));
+            const res = await apiFetch(`${apiUrl}/checkAuth`);
+            const data = await res.json();
 
-          setAuth(data.authenticated);
+            console.log("Auth check:", data);
+            setAuth(data.authenticated);
+          }
         }
       } catch (err) {
         console.error('Auth check failed', err);
@@ -56,8 +66,17 @@ export default function PrivateRoute({ children }) {
     checkAuth();
   }, []);
 
-  if (auth === null) return <Typography>No Access</Typography>;
-  if (!auth) return <Navigate to="/login" />;
+
+  if (auth === null) {
+  // You can return a spinner or a blank screen here
+    return <Typography>Checking authentication...</Typography>;
+  }
+
+
+  if (!auth) {
+    console.log('Auth value error ', auth);
+    return <Navigate to="/login" />;
+  }
   return children;
 }
 

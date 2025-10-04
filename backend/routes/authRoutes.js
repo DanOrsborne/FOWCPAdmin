@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/checkAuth', async (req, res) => {
 
-  console.log("Session user:", req.session.user);
+  //console.log("Session user:", req.session.user);
   if (req.session.user == null) {
     return res.json({ authenticated: false });
   }
@@ -48,10 +48,10 @@ router.get('/checkAuth', async (req, res) => {
   };
 
   const { resources } = await usersContainer.items.query(querySpec).fetchAll();
-  console.log("User resources:", querySpec);
+  //console.log("User resources:", querySpec);
   if (resources.length > 0) {
     const user = resources[0];
-    console.log("User:", user);
+    //console.log("User:", user);
     if (user.Enabled) {
       res.json({ authenticated: true });
     }
@@ -91,7 +91,7 @@ router.post('/helperlogin', async (req, res) => {
     const { resources } = await eventsContainer.items.query(querySpec).fetchAll();
 
     if (resources.length == 1) {
-      if (resources[0].EventPassword !== password) {
+      if (!resources[0].Active || resources[0].EventPassword !== password) {
         return res.status(200).json({ success: false, message: 'Invalid credentials' });
       }
       else {
