@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Card, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab, Select, MenuItem, ButtonGroup } from '@mui/material';
+import { Box, Typography, Checkbox, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab, Select, MenuItem, ButtonGroup } from '@mui/material';
 import Header from './Header';
 import Menu from './Menu';
 import CheckIcon from '@mui/icons-material/Check';
@@ -24,7 +24,8 @@ const EventCheckInPage = () => {
   // Inside your component:
   const [parentFilter, setParentFilter] = useState('');
   const [childFilter, setChildFilter] = useState('');
-  const [classFilter, setClassFilter] = useState('*');
+
+  const [classFilter, setClassFilter] = useState(['All']);
 
 
   const [eventId, setEventId] = useState(() => {
@@ -111,8 +112,8 @@ const EventCheckInPage = () => {
   const clearFilters = () => {
     setChildFilter("");
     setParentFilter("");
-    setClassFilter("*");
-  }
+    setClassFilter(['All']);
+  };
 
   const handleHelperLogout = async () => {
     sessionStorage.removeItem('eventId');
@@ -120,13 +121,13 @@ const EventCheckInPage = () => {
     navigate('/login');
   }
 
-
   const filteredRegistrations = registrations.filter((reg) => {
     const parentMatch = reg.ParentName?.toLowerCase().includes(parentFilter.toLowerCase());
     const childMatch = reg.EventQuestion1Answer?.toLowerCase().includes(childFilter.toLowerCase());
+
     const classMatch =
-      classFilter === "*" ||  // If classFilter is "*", skip filtering by class
-      reg.EventQuestion2Answer?.toLowerCase().includes(classFilter.toLowerCase());
+      classFilter.includes("All") || classFilter.length === 0 ||
+      classFilter.includes(reg.EventQuestion2Answer);
 
     return parentMatch && childMatch && classMatch;
   });
@@ -152,8 +153,8 @@ const EventCheckInPage = () => {
         <Typography variant="h5" sx={{ mb: 2 }}>Check In {event ? ` - ${event.EventName}` : ''}</Typography>
 
         {!event.Active && (<Typography variant="h5" sx={{ mb: 2 }}>Not available for inactive events</Typography>)}
-         {!event.NeedsCheckIn && (<Typography variant="h5" sx={{ mb: 2 }}>Check In not enabled for this event</Typography>)}
-       
+        {!event.NeedsCheckIn && (<Typography variant="h5" sx={{ mb: 2 }}>Check In not enabled for this event</Typography>)}
+
         {event.Active && event.NeedsCheckIn && (<>
           <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
             <TextField
@@ -171,16 +172,38 @@ const EventCheckInPage = () => {
               onChange={(e) => setChildFilter(e.target.value)}
             />
 
-            <Select onChange={(e) => setClassFilter(e.target.value)}
+            <Select
+              multiple
               value={classFilter}
+              onChange={(e) => {
+                const value = e.target.value;
+                
+                // If "All" was just selected
+                if (value.includes("All") && !classFilter.includes("All")) {
+                  setClassFilter(["All"]);
+                  return;
+                }
+
+                // If "All" is currently selected and user selects something else, remove "All"
+                if (classFilter.includes("All")) {
+                  setClassFilter(value.filter(v => v !== "All"));
+                } else {
+                  setClassFilter(value);
+                }
+              }}
               size="small"
-              label="Filter by Class"
-              variant="outlined">
-              <MenuItem value="*">All</MenuItem>
+              renderValue={(selected) => selected.includes("All") || selected.length === 0 ? "All" : selected.join(', ')}
+            >
+              <MenuItem value="All">
+                <Checkbox checked={classFilter.includes("All") || classFilter.length === 0} />
+                All
+              </MenuItem>
+
               {[...new Set(registrations.map((reg) => reg.EventQuestion2Answer).filter(Boolean))]
                 .sort((a, b) => a.localeCompare(b))
                 .map((className, idx) => (
                   <MenuItem key={idx} value={className}>
+                    <Checkbox checked={classFilter.includes(className)} />
                     {className}
                   </MenuItem>
                 ))}
