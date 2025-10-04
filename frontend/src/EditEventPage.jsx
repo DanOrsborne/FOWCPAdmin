@@ -156,6 +156,13 @@ export default function EditEventPage({ isNew }) {
           onChange={val => handleChange('Active', val)}
         />
 
+
+        <CheckBoxInputField
+          label="Needs Check In Function?"
+          value={eventData != null && eventData.NeedsCheckIn || false}
+          onChange={val => handleChange('NeedsCheckIn', val)}
+        />
+
  <TextInputField
           label="Event Password"
           value={eventData != null && eventData.EventPassword}

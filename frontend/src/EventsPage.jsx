@@ -104,7 +104,7 @@ export default function EventsPage() {
                   <Button sx={{ mr: 1 }} onClick={() => navigate(`/summary/${e.EventId}`)}>Summary</Button>
 
                   <Button sx={{ mr: 1 }} onClick={() => navigate(`/registrations/${e.EventId}`)}>Signups</Button>
-                  {e.Active && (<Button sx={{ mr: 1 }} onClick={() => navigate(`/checkin/${e.EventId}`)}>Check In</Button>)}
+                  {e.Active && e.NeedsCheckIn && (<Button sx={{ mr: 1 }} onClick={() => navigate(`/checkin/${e.EventId}`)}>Check In</Button>)}
                   <Button sx={{ mr: 1 }} onClick={() => navigate(`/giftaid/${e.EventId}`)}>Gift Aid</Button>
                   <Button sx={{ mr: 1 }} onClick={() => navigate(`/failedpayments/${e.EventId}`)}>Failed Payments</Button>
                   {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(e.EventId)}>Delete</Button>)}

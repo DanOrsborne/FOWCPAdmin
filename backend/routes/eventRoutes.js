@@ -28,10 +28,10 @@ router.get('/events', authMiddleware, async (req, res) => {
     }
 
     const { resources } = await eventsContainer.items.query(querySpec).fetchAll();
-    res.json(resources);
+    return res.json(resources);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to fetch events' });
+    return res.status(500).json({ message: 'Failed to fetch events' });
   }
 });
 
@@ -76,7 +76,7 @@ router.delete('/events/:eventId', authMiddleware, async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to delete event' });
+    return res.status(500).json({ message: 'Failed to delete event' });
   }
 });
 
@@ -108,10 +108,10 @@ router.patch('/events/:eventId/createshorturl', authMiddleware, async (req, res)
 
     await eventsContainer.item(event.id, event.EventId).replace(event);
 
-    res.json({ message: 'URL updated successfully' });
+    return res.json({ message: 'URL updated successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to update event URL' });
+    return res.status(500).json({ message: 'Failed to update event URL' });
   }
 });
 
@@ -146,7 +146,7 @@ router.get('/events/:eventId/qr', authMiddleware, async (req, res) => {
     qrPng.pipe(res);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to update event URL' });
+    return res.status(500).json({ message: 'Failed to update event URL' });
   }
 });
 
@@ -227,10 +227,10 @@ router.get('/events/:eventId', authMiddleware, async (req, res) => {
     const { resources } = await eventsContainer.items.query(querySpec).fetchAll();
     if (resources.length === 0) return res.status(404).json({ message: 'Event not found' });
 
-    res.json(resources[0]);
+    return res.json(resources[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to fetch event' });
+    return res.status(500).json({ message: 'Failed to fetch event' });
   }
 });
 
@@ -245,10 +245,10 @@ router.put('/events/:eventId', authMiddleware, async (req, res) => {
     const updatedEvent = { ...existingEvent, ...updatedData };
 
     await eventsContainer.items.upsert(updatedEvent);
-    res.json({ success: true, event: updatedEvent });
+    return res.json({ success: true, event: updatedEvent });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to update event' });
+    return res.status(500).json({ message: 'Failed to update event' });
   }
 });
 
@@ -267,10 +267,10 @@ router.get('/events/:eventId/registrations', authMiddleware, async (req, res) =>
     };
 
     const { resources } = await registrationsContainer.items.query(querySpec).fetchAll();
-    res.json(resources);
+    return res.json(resources);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to fetch registrations' });
+    return res.status(500).json({ message: 'Failed to fetch registrations' });
   }
 });
 
@@ -290,10 +290,10 @@ router.get('/events/:eventId/registrations/:registrationId', authMiddleware, asy
     const { resources } = await registrationsContainer.items.query(querySpec).fetchAll();
     if (resources.length === 0) return res.status(404).json({ message: 'Registration not found' });
 
-    res.json(resources[0]);
+    return res.json(resources[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to fetch registration' });
+    return res.status(500).json({ message: 'Failed to fetch registration' });
   }
 });
 

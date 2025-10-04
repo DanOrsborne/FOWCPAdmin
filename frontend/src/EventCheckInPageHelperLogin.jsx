@@ -66,7 +66,7 @@ const EventCheckInPageHelperLogin = () => {
 
         <Typography variant="h5" sx={{ mb: 2 }}>Helper Login {event ? ` - ${event.EventName}` : ''}</Typography>
 
-        {event.Active && (
+        {event.Active && event.NeedsCheckIn && (
 
           <Box alignContent={"center"}>
             <img src={qrUrl} alt="QR Code" />
@@ -76,7 +76,7 @@ const EventCheckInPageHelperLogin = () => {
         )}
 
 
-        {!event.Active && (<Typography variant="h5" sx={{ mb: 2 }}>No available for inactive events</Typography>)}
+        {!event.Active || !event.NeedsCheckIn && (<Typography variant="h5" sx={{ mb: 2 }}>Not available for this event</Typography>)}
         <Button className='no-print' variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>
       </Box>
     </Box>

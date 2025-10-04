@@ -22,11 +22,11 @@ router.post('/login', async (req, res) => {
       const hashedInput = crypto.createHash('md5').update(password + process.env.PASSWORD_HASH_SALT).digest('hex');
 
       if (hashedInput === user.Password && user.Enabled) {
-        req.session.user = { username };
+        req.session.user = username ;
         return res.json({ success: true });
       }
     }
-    res.status(200).json({ success: false, message: 'Invalid credentials' });
+    return res.status(200).json({ success: false, message: 'Invalid credentials' });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Login failed' });
@@ -35,12 +35,12 @@ router.post('/login', async (req, res) => {
 
 router.get('/checkAuth', async (req, res) => {
 
-  //console.log("Session user:", req.session.user);
+  
   if (req.session.user == null) {
     return res.json({ authenticated: false });
   }
 
-  const username = req.session.user.username;
+  const username = req.session.user;
 
   const querySpec = {
     query: 'SELECT * FROM c WHERE c.Email = @username',
@@ -96,7 +96,7 @@ router.post('/helperlogin', async (req, res) => {
       }
       else {
 
-        req.session.user = "Helper-" + eventId;
+        req.session.user = "Helper$" + eventId + "$" + password;
         return res.json({ success: true, eventId: eventId });
       }
     }
@@ -105,7 +105,7 @@ router.post('/helperlogin', async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Login failed' });
+    return res.status(500).json({ message: 'Login failed' });
   }
 });
 

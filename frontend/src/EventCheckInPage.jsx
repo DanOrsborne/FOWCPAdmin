@@ -151,8 +151,10 @@ const EventCheckInPage = () => {
 
         <Typography variant="h5" sx={{ mb: 2 }}>Check In {event ? ` - ${event.EventName}` : ''}</Typography>
 
-        {!event.Active && (<Typography variant="h5" sx={{ mb: 2 }}>No available for inactive events</Typography>)}
-        {event.Active && (<>
+        {!event.Active && (<Typography variant="h5" sx={{ mb: 2 }}>Not available for inactive events</Typography>)}
+         {!event.NeedsCheckIn && (<Typography variant="h5" sx={{ mb: 2 }}>Check In not enabled for this event</Typography>)}
+       
+        {event.Active && event.NeedsCheckIn && (<>
           <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
             <TextField
               label="Filter by Parent Name"
