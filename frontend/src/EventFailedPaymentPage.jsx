@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import Header from './Header';
-import Menu from './Menu';
+import Menu from './Controls/Menu';
 import MD5 from 'crypto-js/md5';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';

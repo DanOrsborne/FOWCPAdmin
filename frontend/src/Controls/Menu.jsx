@@ -1,12 +1,14 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import useCurrentUser from '../hooks/useCurrentUser'
 
-const { drawerWidth } = require('./Constants');
+const { drawerWidth } = require('../Constants');
 
 const Menu = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, loading } = useCurrentUser();
 
   return (
     <Drawer className='no-print' open={true} sx={{
@@ -32,11 +34,11 @@ const Menu = () => {
             <ListItemText primary="Events" />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding>
+        {user?.IsAdmin && (<ListItem disablePadding>
           <ListItemButton selected={location.pathname === '/users'} onClick={() => navigate('/users')}>
             <ListItemText primary="Users" />
           </ListItemButton>
-        </ListItem>
+        </ListItem>)}
 
       </List></Drawer>
   );

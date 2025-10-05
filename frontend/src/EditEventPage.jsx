@@ -4,7 +4,7 @@ import { Box, TextField, Checkbox, FormControlLabel, Button, MenuItem, Typograph
 import dayjs from 'dayjs';
 
 import Header from './Header';
-import Menu from './Menu';
+import Menu from './Controls/Menu';
 import TextInputField from './Controls/TextInputField';
 import TextAreaInputField from './Controls/TextAreaInputField';
 import CheckBoxInputField from './Controls/CheckBoxInputField';

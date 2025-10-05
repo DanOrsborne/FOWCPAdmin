@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Checkbox, Button, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, Tab, Select, MenuItem, ButtonGroup } from '@mui/material';
 import Header from './Header';
-import Menu from './Menu';
+import Menu from './Controls/Menu';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';

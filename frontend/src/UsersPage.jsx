@@ -6,15 +6,20 @@ import {
   Typography
 } from '@mui/material';
 import Header from './Header';
-import Menu from './Menu';
+import Menu from './Controls/Menu';
 import { apiFetch } from './Controls/apiFetch';
+import useCurrentUser from './hooks/useCurrentUser'
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [resetPasswordForm, setResetPasswordForm] = useState({ Password: '', ConfirmPassword: '' });
+  const [resettingUser, setResettingUser] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
-  const [form, setForm] = useState({ Email: '', Password: '', Enabled: true });
+  const [form, setForm] = useState({ Email: '', Password: '', Enabled: true, IsAdmin: false });
   const { apiUrl } = require('./Constants');
+  const { user, loading } = useCurrentUser();
 
   const fetchUsers = async () => {
     try {
@@ -36,7 +41,8 @@ export default function UsersPage() {
     setForm({
       Email: user?.Email || '',
       Password: '',
-      Enabled: user?.Enabled ?? true
+      Enabled: user?.Enabled ?? true,
+      IsAdmin: user?.IsAdmin ?? false
     });
     setDialogOpen(true);
   };
@@ -44,13 +50,13 @@ export default function UsersPage() {
   const handleClose = () => {
     setDialogOpen(false);
     setEditingUser(null);
-    setForm({ Email: '', Password: '', Enabled: true });
+    setForm({ Email: '', Password: '', Enabled: true, IsAdmin: false });
   };
 
   const handleSubmit = async () => {
     const emailExists = users.some(u =>
       u.Email.toLowerCase() === form.Email.toLowerCase() &&
-      (!editingUser || u.id !== editingUser.id)
+      u.UserId !== editingUser?.UserId // Only check others
     );
 
     if (emailExists) {
@@ -60,13 +66,23 @@ export default function UsersPage() {
 
     try {
       const method = editingUser ? 'PUT' : 'POST';
-      const url = editingUser ? `${apiUrl}/users/${editingUser.id}` : `${apiUrl}/users`;
+      const url = editingUser ? `${apiUrl}/users/${editingUser.UserId}` : `${apiUrl}/users`;
 
+      // Build body conditionally
+      const body = {
+        Email: form.Email,
+        Enabled: form.Enabled,
+        IsAdmin: form.IsAdmin,
+        ...(!editingUser && { Password: form.Password }) // Only include password when creating
+      };
+
+
+      console.log("Submitting user data:", body);
       const res = await apiFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(form)
+        body: JSON.stringify(body)
       });
 
       if (!res.ok) throw new Error('Request failed');
@@ -78,6 +94,42 @@ export default function UsersPage() {
       alert("Failed to save user");
     }
   };
+
+
+  const handleOpenResetDialog = (user) => {
+    setResettingUser(user);
+    setResetPasswordForm({ Password: '', ConfirmPassword: '' });
+    setResetDialogOpen(true);
+  };
+
+  const handleCloseResetDialog = () => {
+    setResetDialogOpen(false);
+    setResettingUser(null);
+  };
+
+  const handlePasswordReset = async () => {
+    if (resetPasswordForm.Password !== resetPasswordForm.ConfirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const res = await apiFetch(`${apiUrl}/users/${resettingUser.UserId}/password`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ Password: resetPasswordForm.Password })
+      });
+
+      if (!res.ok) throw new Error('Failed to reset password');
+      alert('Password reset successfully.');
+      handleCloseResetDialog();
+    } catch (err) {
+      console.error(err);
+      alert("Password reset failed");
+    }
+  };
+
 
 
   const handleDelete = async (id) => {
@@ -97,6 +149,13 @@ export default function UsersPage() {
 
   return (
 
+<>
+
+
+
+
+
+
     <Box sx={{ display: 'flex' }}>
       <Header />
 
@@ -107,8 +166,8 @@ export default function UsersPage() {
 
         <Typography variant="h5" sx={{ mb: 2 }}>Users</Typography>
 
-
-
+        { !user?.IsAdmin && (<Typography variant="h5" sx={{ mb: 2 }}>Not available for this user</Typography>) }
+        {user?.IsAdmin && (<>
         <Button variant="contained" color="primary" onClick={() => handleOpen()}>
           Add User
         </Button>
@@ -119,6 +178,7 @@ export default function UsersPage() {
               <TableRow>
                 <TableCell>Email</TableCell>
                 <TableCell>Enabled</TableCell>
+                <TableCell>Is Admin?</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -127,8 +187,10 @@ export default function UsersPage() {
                 <TableRow key={u.id}>
                   <TableCell>{u.Email}</TableCell>
                   <TableCell>{u.Enabled ? 'Yes' : 'No'}</TableCell>
+                  <TableCell>{u.IsAdmin ? 'Yes' : 'No'}</TableCell>
                   <TableCell>
                     <Button sx={{ mr: 1 }} onClick={() => handleOpen(u)}>Edit</Button>
+                    <Button sx={{ mr: 1 }} onClick={() => handleOpenResetDialog(u)}>Reset Password</Button>
                     <Button color="error" onClick={() => handleDelete(u.id)}>Delete</Button>
                   </TableCell>
                 </TableRow>
@@ -147,14 +209,19 @@ export default function UsersPage() {
               value={form.Email}
               onChange={(e) => setForm({ ...form, Email: e.target.value })}
             />
-            <TextField autoComplete={false}
-              label="Password"
-              type="password"
-              fullWidth
-              margin="dense"
-              value={form.Password}
-              onChange={(e) => setForm({ ...form, Password: e.target.value })}
-            />
+
+            {!editingUser && (
+              <TextField autoComplete={false}
+                label="Password"
+                type="password"
+                fullWidth
+                margin="dense"
+                value={form.Password}
+                onChange={(e) => setForm({ ...form, Password: e.target.value })}
+              />
+            )}
+
+
             <FormControlLabel
               control={
                 <Switch
@@ -164,12 +231,52 @@ export default function UsersPage() {
               }
               label="Enabled"
             />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={form.IsAdmin}
+                  onChange={(e) => setForm({ ...form, IsAdmin: e.target.checked })}
+                />
+              }
+              label="Is Admin?"
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
             <Button onClick={handleSubmit} variant="contained">Save</Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog open={resetDialogOpen} onClose={handleCloseResetDialog}>
+          <DialogTitle>Reset Password for {resettingUser?.Email}</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="New Password"
+              type="password"
+              fullWidth
+              margin="dense"
+              value={resetPasswordForm.Password}
+              onChange={(e) => setResetPasswordForm({ ...resetPasswordForm, Password: e.target.value })}
+            />
+            <TextField
+              label="Confirm Password"
+              type="password"
+              fullWidth
+              margin="dense"
+              value={resetPasswordForm.ConfirmPassword}
+              onChange={(e) => setResetPasswordForm({ ...resetPasswordForm, ConfirmPassword: e.target.value })}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseResetDialog}>Cancel</Button>
+            <Button onClick={handlePasswordReset} variant="contained" color="primary">Reset</Button>
+          </DialogActions>
+        </Dialog>
+
+              </>)}
+
       </Box></Box>
+
+</>
   );
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Grid, TextField, Button, MenuItem } from '@mui/material';
 import Header from './Header';
-import Menu from './Menu';
+import Menu from './Controls/Menu';
 import TextInputField from './Controls/TextInputField';
 import TextAreaInputField from './Controls/TextAreaInputField';
 import CheckBoxInputField from './Controls/CheckBoxInputField';

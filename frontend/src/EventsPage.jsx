@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Typography, FormControl, Container, Table, TableBody, TableCell, TableHead, TableRow, Button, Select, MenuItem, Box, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
-import Menu from './Menu';
+import Menu from './Controls/Menu';
 import { apiFetch } from './Controls/apiFetch';
 
 export default function EventsPage() {

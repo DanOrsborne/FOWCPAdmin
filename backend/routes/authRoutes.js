@@ -16,11 +16,11 @@ router.post('/login', async (req, res) => {
     };
 
     const { resources } = await usersContainer.items.query(querySpec).fetchAll();
-
+console.log("Login resources:", resources);
     if (resources.length > 0) {
       const user = resources[0];
       const hashedInput = crypto.createHash('md5').update(password + process.env.PASSWORD_HASH_SALT).digest('hex');
-
+      console.log("Hashed input:", hashedInput, "Stored hash:", user.Password);
       if (hashedInput === user.Password && user.Enabled) {
         req.session.user = username ;
         return res.json({ success: true });
@@ -46,6 +46,7 @@ router.get('/checkAuth', async (req, res) => {
     query: 'SELECT * FROM c WHERE c.Email = @username',
     parameters: [{ name: '@username', value: username}]
   };
+
 
   const { resources } = await usersContainer.items.query(querySpec).fetchAll();
   //console.log("User resources:", querySpec);
