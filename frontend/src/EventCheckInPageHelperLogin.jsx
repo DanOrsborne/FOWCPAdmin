@@ -66,9 +66,17 @@ const EventCheckInPageHelperLogin = () => {
 
         <Typography variant="h5" sx={{ mb: 2 }}>Helper Login {event ? ` - ${event.EventName}` : ''}</Typography>
 
-        {event.Active && event.NeedsCheckIn && (
+        {event.Active && event.NeedsCheckIn && event.EventPassword  && (
 
-          <Box alignContent={"center"}>
+          <Box sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column", // stack image and text vertically
+            alignItems: "center",    // center horizontally
+            justifyContent: "center", // center vertically (optional)
+            textAlign: "center",     // center text inside Typography
+            py: 2,                   // optional padding
+          }}>
             <img src={qrUrl} alt="QR Code" />
 
             <Typography variant="h3" sx={{ mb: 2 }}>Password: {`${event.EventPassword}`}</Typography>
@@ -76,7 +84,7 @@ const EventCheckInPageHelperLogin = () => {
         )}
 
 
-        {!event.Active || !event.NeedsCheckIn && (<Typography variant="h5" sx={{ mb: 2 }}>Not available for this event</Typography>)}
+        {!event.Active || !event.NeedsCheckIn  || !event.EventPassword&& (<Typography variant="h5" sx={{ mb: 2 }}>Not available for this event</Typography>)}
         <Button className='no-print' variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>
       </Box>
     </Box>

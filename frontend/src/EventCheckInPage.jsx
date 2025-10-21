@@ -180,6 +180,24 @@ const EventCheckInPage = () => {
             />
 
             <Select
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 300, // Allow scrollable menu
+                    overflowY: 'auto',
+                  },
+                },
+                // Helps with placement on small screens
+                getContentAnchorEl: null,
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "left",
+                },
+                transformOrigin: {
+                  vertical: "top",
+                  horizontal: "left",
+                },
+              }}
               multiple
               value={classFilter}
               onChange={(e) => {
