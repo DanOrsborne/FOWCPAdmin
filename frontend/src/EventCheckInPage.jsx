@@ -239,6 +239,10 @@ const EventCheckInPage = () => {
               !childFilter &&
               (!classFilter || classFilter === "*") // disable if empty or "*"
             } variant="contained" sx={{ mt: 0 }} onClick={() => clearFilters()}>Clear</Button>
+
+
+
+            <Typography variant='body2' sx={{ alignSelf: 'center', ml: 'auto' }}>Showing {filteredRegistrations.length} of {registrations.length} registrations</Typography>
           </Box>
 
           <Table >
