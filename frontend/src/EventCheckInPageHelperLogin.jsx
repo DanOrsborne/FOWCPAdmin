@@ -66,7 +66,7 @@ const EventCheckInPageHelperLogin = () => {
 
         <Typography variant="h5" sx={{ mb: 2 }}>Helper Login {event ? ` - ${event.EventName}` : ''}</Typography>
 
-        {event.Active && event.NeedsCheckIn && event.EventPassword  && (
+        {event.NeedsCheckIn && event.EventPassword  && (
 
           <Box sx={{
             width: "100%",
@@ -84,7 +84,7 @@ const EventCheckInPageHelperLogin = () => {
         )}
 
 
-        {!event.Active || !event.NeedsCheckIn  || !event.EventPassword&& (<Typography variant="h5" sx={{ mb: 2 }}>Not available for this event</Typography>)}
+        {!event.NeedsCheckIn  || !event.EventPassword&& (<Typography variant="h5" sx={{ mb: 2 }}>Not available for this event</Typography>)}
         <Button className='no-print' variant="contained" sx={{ mt: 3 }} onClick={() => navigate(-1)}>Back</Button>
       </Box>
     </Box>

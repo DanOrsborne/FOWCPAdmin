@@ -21,7 +21,7 @@ export default function EventsPage() {
       credentials: 'include'
     });
     const data = await res.json();
-    const filtered = filter === 'active' ? data.filter(e => e.Active) : data;
+    const filtered = filter === 'active' ? data.filter(e => e.Active && e.EventDateTime > new Date().toISOString()) : data;
     setEvents(filtered);
   };
 
@@ -75,7 +75,7 @@ export default function EventsPage() {
 
           <FormControl variant="outlined" size="small">
             <Select value={filter} onChange={e => setFilter(e.target.value)}>
-              <MenuItem value="active">Active Only</MenuItem>
+              <MenuItem value="active">Active and Upcoming Only</MenuItem>
               <MenuItem value="all">All Events</MenuItem>
             </Select>
           </FormControl>
@@ -104,7 +104,7 @@ export default function EventsPage() {
                   <Button sx={{ mr: 1 }} onClick={() => navigate(`/summary/${e.EventId}`)}>Summary</Button>
 
                   <Button sx={{ mr: 1 }} onClick={() => navigate(`/registrations/${e.EventId}`)}>Signups</Button>
-                  {e.Active && e.NeedsCheckIn && (<Button sx={{ mr: 1 }} onClick={() => navigate(`/checkin/${e.EventId}`)}>Check In</Button>)}
+                  {e.NeedsCheckIn && (<Button sx={{ mr: 1 }} onClick={() => navigate(`/checkin/${e.EventId}`)}>Check In</Button>)}
                   <Button sx={{ mr: 1 }} onClick={() => navigate(`/giftaid/${e.EventId}`)}>Gift Aid</Button>
                   <Button sx={{ mr: 1 }} onClick={() => navigate(`/failedpayments/${e.EventId}`)}>Failed Payments</Button>
                   {username === 'dorsborne@gmail.com' && (<Button onClick={() => handleDelete(e.EventId)}>Delete</Button>)}

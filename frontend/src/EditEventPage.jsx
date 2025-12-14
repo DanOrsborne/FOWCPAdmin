@@ -15,7 +15,8 @@ export default function EditEventPage({ isNew }) {
   const navigate = useNavigate();
   const [eventData, setEventData] = useState(null);
   const { apiUrl } = require('./Constants');
-
+  const [showRegistrationCloseDate, setShowRegistrationCloseDate] = useState(false);
+  const hasRegistrationCloseDate = eventData?.RegistrationCloseDateTime && dayjs(eventData.RegistrationCloseDateTime).isValid();
 
   const qrUrl = `${apiUrl}/events/${eventId}/qr`;
 
@@ -163,7 +164,7 @@ export default function EditEventPage({ isNew }) {
           onChange={val => handleChange('NeedsCheckIn', val)}
         />
 
- <TextInputField
+        <TextInputField
           label="Event Password"
           value={eventData != null && eventData.EventPassword}
           onChange={val => handleChange('EventPassword', val)}
@@ -193,6 +194,25 @@ export default function EditEventPage({ isNew }) {
         />
 
 
+
+        {!hasRegistrationCloseDate && (
+          <CheckBoxInputField
+            label="Requires Registration Close Date?"
+            value={showRegistrationCloseDate}
+            onChange={val => setShowRegistrationCloseDate(val)}
+          />
+        )}
+
+        {(hasRegistrationCloseDate || showRegistrationCloseDate) && (
+          <TextInputField
+            label="Registration Close Date & Time"
+            value={eventData?.RegistrationCloseDateTime ? dayjs(eventData.RegistrationCloseDateTime).format('YYYY-MM-DDTHH:mm') : ''}
+            onChange={val => handleChange('RegistrationCloseDateTime', val)}
+            type="datetime-local"
+          />
+        )}
+
+
         <TextInputField
           label="Event Date & Time"
           value={dayjs(eventData != null && eventData.EventDateTime).format('YYYY-MM-DDTHH:mm')}
@@ -216,7 +236,7 @@ export default function EditEventPage({ isNew }) {
         />
 
 
- <CheckBoxInputField
+        <CheckBoxInputField
           label="Signup needs Email Acknowledgment?"
           value={eventData != null && eventData.EmailAckRequired || false}
           onChange={val => handleChange('EmailAckRequired', val)}
