@@ -75,7 +75,10 @@ const EventRegistrationPage = () => {
 
   const filteredRegistrations = registrations.filter((reg) => {
     const parentMatch = reg.ParentName?.toLowerCase().includes(parentFilter.toLowerCase());
-    const childMatch = reg.EventQuestion1Answer?.toLowerCase().includes(childFilter.toLowerCase());
+    let childMatch = reg.EventQuestion1Answer?.toLowerCase().includes(childFilter.toLowerCase());
+
+     if(reg.EventQuestion1Answer == null) childMatch = true;
+
     return parentMatch && childMatch;
   });
 
